@@ -73,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActionScene.cs" />
+    <Compile Include="Bomb.cs" />
     <Compile Include="CollisionManager.cs" />
     <Compile Include="Explosion.cs" />
     <Compile Include="GameScene.cs" />

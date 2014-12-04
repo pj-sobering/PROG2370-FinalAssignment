@@ -15,19 +15,30 @@ namespace finalProject
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class CollisionManager : Microsoft.Xna.Framework.GameComponent
+    public class Bomb : Microsoft.Xna.Framework.DrawableGameComponent
     {
-        private Player p1;
-        private Player2 p2;
-        private Wall wall;
+        private SpriteBatch spriteBatch;
+        private Texture2D tex;
+        private Vector2 position;
+        private Vector2 stage;
+        Player p1;
+        private List<Bomb> bombList;
+        public List<Bomb> BombList
+        {
+            get { return bombList; }
+            set { bombList = value; }
+        }
 
-        public CollisionManager(Game game, Player p1, Player2 p2, Wall wall)
+
+        public Bomb(Game game, SpriteBatch spriteBatch, Texture2D tex, Vector2 position, Vector2 stage)
             : base(game)
         {
             // TODO: Construct any child components here
-            this.p1 = p1;
-            this.p2 = p2;
-            this.wall = wall;
+            this.spriteBatch = spriteBatch;
+            this.tex = tex;
+            this.position = position;
+            this.stage = stage;
+            bombList = new List<Bomb>();
         }
 
         /// <summary>
@@ -48,11 +59,19 @@ namespace finalProject
         public override void Update(GameTime gameTime)
         {
             // TODO: Add your update code here
-            Rectangle p1Rect = p1.getBound();
-            Rectangle p2Rect = p2.getBound();
-            Rectangle wallRect = wall.getBound();
-            
+
             base.Update(gameTime);
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            spriteBatch.Begin();
+            foreach (Bomb item in bombList)
+            {
+                spriteBatch.Draw(tex, item.position, Color.White);
+            }
+            spriteBatch.End();
+            base.Draw(gameTime);
         }
     }
 }

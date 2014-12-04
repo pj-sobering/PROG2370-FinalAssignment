@@ -30,6 +30,7 @@ namespace finalProject
         Wall botWall;
         Wall leftWall;
         Wall rightWall;
+        Bomb bomb;
 
         public Game1()
         {
@@ -115,13 +116,13 @@ namespace finalProject
             Texture2D p1Front = Content.Load<Texture2D>("images/player1");
             Vector2 p1FrontPos = new Vector2(0, 0);
             Vector2 p1FrontSpeed = new Vector2(2, 2);
-            p1 = new Player(this, spriteBatch, p1Front, p1FrontPos, p1FrontSpeed, stage);
+            p1 = new Player(this, spriteBatch, p1Front, p1FrontPos, p1FrontSpeed, stage, Content.Load<Texture2D>("images/bomb"));
             this.Components.Add(p1);
 
             Texture2D p2Front = Content.Load<Texture2D>("images/player2");
             Vector2 p2FrontPos = new Vector2(stage.X - p2Front.Width, stage.Y - p2Front.Height);
             Vector2 p2FrontSpeed = new Vector2(2, 2);
-            p2 = new Player2(this, spriteBatch, p2Front, p2FrontPos, p2FrontSpeed, stage);
+            p2 = new Player2(this, spriteBatch, p2Front, p2FrontPos, p2FrontSpeed, stage, Content.Load<Texture2D>("images/bomb"));
             this.Components.Add(p2);
 
         }

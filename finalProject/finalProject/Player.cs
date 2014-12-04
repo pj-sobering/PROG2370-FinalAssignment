@@ -19,14 +19,19 @@ namespace finalProject
     {
         private SpriteBatch spriteBatch;
         private Vector2 position;
-
         public Vector2 Position
         {
             get { return position; }
             set { position = value; }
         }
         private Texture2D tex;
+
         private Vector2 speed;
+        public Vector2 Speed
+        {
+            get { return speed; }
+            set { speed = value; }
+        }
         private Vector2 stage;
         private string direction;
         private List<Rectangle> framesUp = new List<Rectangle>();
@@ -44,8 +49,11 @@ namespace finalProject
         const int SPRITE_HEIGHT = 58;
         const int SPRITE_PADDING = 20;
         const int SPRITE_FRAME_LIMIT = 4;
+        Bomb bomb;
+        Texture2D bombTex;
 
-        public Player(Game game, SpriteBatch spriteBatch, Texture2D tex, Vector2 position, Vector2 speed, Vector2 stage)
+        public Player(Game game, SpriteBatch spriteBatch, Texture2D tex, Vector2 position, Vector2 speed,
+                      Vector2 stage, Texture2D bombTex)
             : base(game)
         {
             // TODO: Construct any child components here
@@ -54,7 +62,9 @@ namespace finalProject
             this.tex = tex;
             this.speed = speed;
             this.stage = stage;
-            this.frameIndex = 0; 
+            this.frameIndex = 0;
+            this.bombTex = bombTex;
+            this.bomb = new Bomb(game, spriteBatch, bombTex, position, stage);
 
             AnimationFrames();
         }
@@ -167,12 +177,10 @@ namespace finalProject
                     position.X = stage.X - SPRITE_WIDTH;
                 }
                 delayCounter++;
-
             }
 
             if (delayCounter > DELAY)
             {
-                
                 frameIndex++;
                 delayCounter = 0;
             }
@@ -181,11 +189,17 @@ namespace finalProject
                 frameIndex = 1;
             }
 
-
             if (ks.IsKeyUp(Keys.W) && ks.IsKeyUp(Keys.S) && ks.IsKeyUp(Keys.A) && ks.IsKeyUp(Keys.D))
             {
                 frameIndex = 0;
             }
+
+            if (ks.IsKeyDown(Keys.Space) && bomb.BombList.Count < 1)
+            {
+                bomb.BombList.Add(new Bomb(Game, spriteBatch, bombTex, position, stage));
+                Game.Components.Add(bomb);
+            }
+
             base.Update(gameTime);
         }
 

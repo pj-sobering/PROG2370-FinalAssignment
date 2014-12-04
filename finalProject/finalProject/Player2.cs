@@ -26,7 +26,13 @@ namespace finalProject
             set { position = value; }
         }
         private Texture2D tex;
+
         private Vector2 speed;
+        public Vector2 Speed
+        {
+            get { return speed; }
+            set { speed = value; }
+        }
         private Vector2 stage;
         private string direction;
         private List<Rectangle> framesUp = new List<Rectangle>();
@@ -44,8 +50,11 @@ namespace finalProject
         const int SPRITE_HEIGHT = 60;
         const int SPRITE_PADDING = 20;
         const int SPRITE_FRAME_LIMIT = 4;
+        Bomb bomb;
+        Texture2D bombTex;
 
-        public Player2(Game game, SpriteBatch spriteBatch, Texture2D tex, Vector2 position, Vector2 speed, Vector2 stage)
+        public Player2(Game game, SpriteBatch spriteBatch, Texture2D tex, Vector2 position, Vector2 speed,
+                       Vector2 stage, Texture2D bombTex)
             : base(game)
         {
             // TODO: Construct any child components here
@@ -55,6 +64,8 @@ namespace finalProject
             this.speed = speed;
             this.stage = stage;
             this.frameIndex = 0;
+            this.bombTex = bombTex;
+            this.bomb = new Bomb(game, spriteBatch, bombTex, position, stage);
 
             AnimationFrames();
         }
@@ -163,7 +174,6 @@ namespace finalProject
                 if (position.X < 0)
                 {
                     position.X = 0;
-
                 }
                 delayCounter++;
                 if (delayCounter > DELAY)
@@ -196,6 +206,13 @@ namespace finalProject
             {
                 frameIndex = 0;
             }
+
+            if (ks.IsKeyDown(Keys.RightControl) && bomb.BombList.Count < 1)
+            {
+                bomb.BombList.Add(new Bomb(Game, spriteBatch, bombTex, position, stage));
+                Game.Components.Add(bomb);
+            }
+
             base.Update(gameTime);
         }
 
