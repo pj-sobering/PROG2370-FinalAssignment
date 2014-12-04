@@ -1,0 +1,24 @@
+Animations
+
+Player Character - facing 4 directions, walking in 4 directions = 8.
+Bomb
+Building
+Obstacle
+
+
+String Menu
+	Start
+	Instructions
+	Load
+	Exit
+
+Logic
+	Player places bomb at current position (underneith player sprite).
+	Bomb explodes, causing damage down paths to everyone except the player who planted the bomb. 
+	Blast travels in all directions for a total of 20 spaces, divided by whichever direction the blast can go
+	If the blast can only go in two directions, the blast will travel 10 spaces in each direction possible.
+	If the blast can go in three directions, the blast will travel 6.666 spaces in each direction possible.
+	If the blast can go in 4 directions, the blast will travel 5 spaces in each direction possible.
+	Once the board is cleared, the player advances to the next level.
+	Each level provides more objects to clear. If the player touches a clearable object, the player fails the level.
+
