@@ -22,6 +22,13 @@ namespace finalProject
     /// </summary>
     static class ContentManager
     {
+        static Vector2 stage;
+
+        public static Vector2 Stage
+        {
+            get { return ContentManager.stage; }
+        }
+
         static Texture2D player1Tex;
 
         public static Texture2D Player1Tex
@@ -86,6 +93,7 @@ namespace finalProject
 
         static public void LoadAll(Game1 game)
         {
+            
             player1Tex = game.Content.Load<Texture2D>("images/player1");
             player2Tex = game.Content.Load<Texture2D>("images/player2");
             bombTex = game.Content.Load<Texture2D>("images/bomb");

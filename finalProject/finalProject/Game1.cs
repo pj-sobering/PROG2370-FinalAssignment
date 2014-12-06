@@ -27,24 +27,17 @@ namespace finalProject
         private StartScene startScene;
         private HelpScene helpScene;
         private ActionScene actionScene;
-
-        Texture2D bombTex;
-
-        public Texture2D BombTex
-        {
-            get { return bombTex; }
-        }
         Player p1;
         Player p2;
         Wall topWall;
         Wall botWall;
         Wall leftWall;
         Wall rightWall;
-        Bomb bomb;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.IsFullScreen = true;
             Content.RootDirectory = "Content";
         }
 
