@@ -18,27 +18,14 @@ namespace finalProject
     public class Bomb : Microsoft.Xna.Framework.DrawableGameComponent
     {
         private SpriteBatch spriteBatch;
-        private Texture2D tex;
         private Vector2 position;
-        private Vector2 stage;
-        Player p1;
-        private List<Bomb> bombList;
-        public List<Bomb> BombList
-        {
-            get { return bombList; }
-            set { bombList = value; }
-        }
 
-
-        public Bomb(Game game, SpriteBatch spriteBatch, Texture2D tex, Vector2 position, Vector2 stage)
+        public Bomb(Game game, SpriteBatch spriteBatch, Vector2 position)
             : base(game)
         {
             // TODO: Construct any child components here
             this.spriteBatch = spriteBatch;
-            this.tex = tex;
             this.position = position;
-            this.stage = stage;
-            bombList = new List<Bomb>();
         }
 
         /// <summary>
@@ -66,10 +53,7 @@ namespace finalProject
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
-            foreach (Bomb item in bombList)
-            {
-                spriteBatch.Draw(tex, item.position, Color.White);
-            }
+            spriteBatch.Draw(ContentManager.BombTex, position, null, Color.White, 0, new Vector2(0,0), 1, SpriteEffects.None, 1);
             spriteBatch.End();
             base.Draw(gameTime);
         }

@@ -17,6 +17,26 @@ namespace finalProject
     /// </summary>
     public class Player : Microsoft.Xna.Framework.DrawableGameComponent
     {
+
+        const int SPRITE_WIDTH = 42; // width of a single image in the sprite file
+
+        public int Width
+        {
+            get { return SPRITE_WIDTH; }
+        } 
+
+        const int SPRITE_HEIGHT = 60; // height of a single image in the sprite file
+
+        public int Height
+        {
+            get { return SPRITE_HEIGHT; }
+        } 
+
+        const int SPRITE_PADDING = 20; // the space between images in the sprite file - this is removed from the sprite width to improve collision detection
+        const int SPRITE_FRAME_LIMIT = 4; // number of frames per movement in the sprite file - Does not have to be constant, but in this case we only work with 4 frames per movement.
+        const int DELAY = 10; // The number of frames per second to wait before progressing to the next frame of an animation
+        const int BOMBS_PER_PLAYER = 1; // The number of bombs a player is allowed to drop at a time.
+
         private SpriteBatch spriteBatch;
         private Vector2 position;
         public Vector2 Position
@@ -33,27 +53,29 @@ namespace finalProject
             set { speed = value; }
         }
         private Vector2 stage;
-        private string direction;
         private List<Rectangle> framesUp = new List<Rectangle>();
         private List<Rectangle> framesDown = new List<Rectangle>();
         private List<Rectangle> framesLeft = new List<Rectangle>();
         private List<Rectangle> framesRight = new List<Rectangle>();
+        private KeyBindings bindings;
         int delayCounter = 0;
-        int frameIndex = 0; 
-        const string UP = "up";
-        const string DOWN = "down";
-        const string LEFT = "left";
-        const string RIGHT = "right";
-        const int DELAY = 10;
-        const int SPRITE_WIDTH = 42;
-        const int SPRITE_HEIGHT = 58;
-        const int SPRITE_PADDING = 20;
-        const int SPRITE_FRAME_LIMIT = 4;
-        Bomb bomb;
-        Texture2D bombTex;
+        int frameIndex = 0;
+        enum Direction { Up, Down, Left, Right };
+        Direction direction = Direction.Down;
+        private Bomb[] bombArray = new Bomb[BOMBS_PER_PLAYER];
 
-        public Player(Game game, SpriteBatch spriteBatch, Texture2D tex, Vector2 position, Vector2 speed,
-                      Vector2 stage, Texture2D bombTex)
+        /// <summary>
+        /// Constructs a Player object
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="spriteBatch"></param>
+        /// <param name="tex"></param>
+        /// <param name="position"></param>
+        /// <param name="speed"></param>
+        /// <param name="stage"></param>
+        /// <param name="keyBindings"></param>
+        public Player(Game1 game, SpriteBatch spriteBatch, Texture2D tex, Vector2 position, Vector2 speed,
+                      Vector2 stage, KeyBindings keyBindings)
             : base(game)
         {
             // TODO: Construct any child components here
@@ -63,8 +85,7 @@ namespace finalProject
             this.speed = speed;
             this.stage = stage;
             this.frameIndex = 0;
-            this.bombTex = bombTex;
-            this.bomb = new Bomb(game, spriteBatch, bombTex, position, stage);
+            this.bindings = keyBindings;
 
             AnimationFrames();
         }
@@ -76,7 +97,10 @@ namespace finalProject
         public override void Initialize()
         {
             // TODO: Add your initialization code here
-
+            for (int i = 0; i < bombArray.Length; i++)
+            {
+                bombArray[i] = null;
+            }
             base.Initialize();
         }
 
@@ -136,20 +160,20 @@ namespace finalProject
             // TODO: Add your update code here
 
             KeyboardState ks = Keyboard.GetState(); 
-            if (ks.IsKeyDown(Keys.W) && !ks.IsKeyDown(Keys.D) && !ks.IsKeyDown(Keys.A) && ! ks.IsKeyDown(Keys.S))
+            if (ks.IsKeyDown(bindings.Up) && !ks.IsKeyDown(bindings.Right) && !ks.IsKeyDown(bindings.Left) && ! ks.IsKeyDown(bindings.Down))
             {
                 
                 position.Y -= speed.Y;
-                direction = UP;
+                direction = Direction.Up;
                 if (position.Y < 0)
                 {
                     position.Y = 0;
                 }
                 delayCounter++;
             }
-            if (ks.IsKeyDown(Keys.S) && !ks.IsKeyDown(Keys.D) && !ks.IsKeyDown(Keys.A) && !ks.IsKeyDown(Keys.W))
+            if (ks.IsKeyDown(bindings.Down) && !ks.IsKeyDown(bindings.Right) && !ks.IsKeyDown(bindings.Left) && !ks.IsKeyDown(bindings.Right))
             {
-                direction = DOWN;
+                direction = Direction.Down;
                 position.Y += speed.Y;
                 if (position.Y > stage.Y - SPRITE_HEIGHT)
                 {
@@ -157,9 +181,9 @@ namespace finalProject
                 }
                 delayCounter++;
             }
-            if (ks.IsKeyDown(Keys.A) && !ks.IsKeyDown(Keys.D) && !ks.IsKeyDown(Keys.W) && !ks.IsKeyDown(Keys.S))
+            if (ks.IsKeyDown(bindings.Left) && !ks.IsKeyDown(bindings.Right) && !ks.IsKeyDown(bindings.Up) && !ks.IsKeyDown(bindings.Down))
             {
-                direction = LEFT;
+                direction = Direction.Left;
                 position.X -= speed.X;
                 if (position.X < 0)
                 {
@@ -168,9 +192,9 @@ namespace finalProject
                 }
                 delayCounter++;
             }
-            if (ks.IsKeyDown(Keys.D) && !ks.IsKeyDown(Keys.W) && !ks.IsKeyDown(Keys.A) && !ks.IsKeyDown(Keys.S))
+            if (ks.IsKeyDown(bindings.Right) && !ks.IsKeyDown(bindings.Up) && !ks.IsKeyDown(bindings.Left) && !ks.IsKeyDown(bindings.Down))
             {
-                direction = RIGHT;
+                direction = Direction.Right;
                 position.X += speed.X;
                 if (position.X > stage.X - SPRITE_WIDTH)
                 {
@@ -189,15 +213,23 @@ namespace finalProject
                 frameIndex = 1;
             }
 
-            if (ks.IsKeyUp(Keys.W) && ks.IsKeyUp(Keys.S) && ks.IsKeyUp(Keys.A) && ks.IsKeyUp(Keys.D))
+            if (ks.IsKeyUp(bindings.Up) && ks.IsKeyUp(bindings.Down) && ks.IsKeyUp(bindings.Left) && ks.IsKeyUp(bindings.Right))
             {
                 frameIndex = 0;
             }
 
-            if (ks.IsKeyDown(Keys.Space) && bomb.BombList.Count < 1)
+            if (ks.IsKeyDown(bindings.Bomb))
             {
-                bomb.BombList.Add(new Bomb(Game, spriteBatch, bombTex, position, stage));
-                Game.Components.Add(bomb);
+                for (int i = 0; i < bombArray.Length; i++)
+                {
+                    if (bombArray[i] == null)
+                    {
+                        bombArray[i] = new Bomb(Game, spriteBatch, position);
+                        Game.Components.Add(bombArray[i]);
+                        break;
+                    }
+                }
+
             }
 
             base.Update(gameTime);
@@ -208,20 +240,19 @@ namespace finalProject
             spriteBatch.Begin();
             switch(direction)
             {
-                case UP:
+                case Direction.Up:
                     spriteBatch.Draw(tex, position,
                     framesUp.ElementAt(frameIndex), Color.White);
-
                 break;
-                case LEFT:
+                case Direction.Left:
                     spriteBatch.Draw(tex, position,
                     framesLeft.ElementAt(frameIndex), Color.White);
                 break;
-                case RIGHT:
+                case Direction.Right:
                     spriteBatch.Draw(tex, position,
                     framesRight.ElementAt(frameIndex), Color.White);
                 break;
-                case DOWN:
+                case Direction.Down:
                     spriteBatch.Draw(tex, position,
                     framesDown.ElementAt(frameIndex), Color.White);
                 break;

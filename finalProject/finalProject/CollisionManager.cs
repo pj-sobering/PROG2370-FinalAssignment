@@ -18,10 +18,10 @@ namespace finalProject
     public class CollisionManager : Microsoft.Xna.Framework.GameComponent
     {
         private Player p1;
-        private Player2 p2;
+        private Player p2;
         private Wall wall;
 
-        public CollisionManager(Game game, Player p1, Player2 p2, Wall wall)
+        public CollisionManager(Game game, Player p1, Player p2, Wall wall)
             : base(game)
         {
             // TODO: Construct any child components here

@@ -23,9 +23,14 @@ namespace finalProject
         private HelpScene helpScene;
         private ActionScene actionScene;
 
-        Texture2D backgroundTex;
+        Texture2D bombTex;
+
+        public Texture2D BombTex
+        {
+            get { return bombTex; }
+        }
         Player p1;
-        Player2 p2;
+        Player p2;
         Wall topWall;
         Wall botWall;
         Wall leftWall;
@@ -86,7 +91,7 @@ namespace finalProject
             startScene.show();
 
             // TODO: use this.Content to load your game content here
-            backgroundTex = Content.Load<Texture2D>("images/background");
+            ContentManager.LoadAll(this);
             Vector2 stage = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
 
 
@@ -111,18 +116,17 @@ namespace finalProject
             rightWall = new Wall(this, spriteBatch, rightWallTex, rightWallPos);
             this.Components.Add(rightWall);
 
+            Vector2 pSpeed = new Vector2(2, 2); // base speed is the same for both players;
 
-
-            Texture2D p1Front = Content.Load<Texture2D>("images/player1");
-            Vector2 p1FrontPos = new Vector2(0, 0);
-            Vector2 p1FrontSpeed = new Vector2(2, 2);
-            p1 = new Player(this, spriteBatch, p1Front, p1FrontPos, p1FrontSpeed, stage, Content.Load<Texture2D>("images/bomb"));
+            KeyBindings p1Bindings = new KeyBindings(Keys.W, Keys.S, Keys.A, Keys.D, Keys.Space);
+            Vector2 p1Pos = new Vector2(0, 0);
+            
+            p1 = new Player(this, spriteBatch, ContentManager.Player1Tex, p1Pos, pSpeed, stage, p1Bindings);
             this.Components.Add(p1);
 
-            Texture2D p2Front = Content.Load<Texture2D>("images/player2");
-            Vector2 p2FrontPos = new Vector2(stage.X - p2Front.Width, stage.Y - p2Front.Height);
-            Vector2 p2FrontSpeed = new Vector2(2, 2);
-            p2 = new Player2(this, spriteBatch, p2Front, p2FrontPos, p2FrontSpeed, stage, Content.Load<Texture2D>("images/bomb"));
+            KeyBindings p2Bindings = new KeyBindings(Keys.Up, Keys.Down, Keys.Left, Keys.Right, Keys.NumPad0);
+            Vector2 p2Pos = new Vector2(stage.X - p1.Width, stage.Y - p1.Height); // dimensions of both players are constant, using p1's values because it's already instantiated.
+            p2 = new Player(this, spriteBatch, ContentManager.Player2Tex, p2Pos, pSpeed, stage, p2Bindings);
             this.Components.Add(p2);
 
         }
@@ -143,14 +147,10 @@ namespace finalProject
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                this.Exit();
-
             // TODO: Add your update logic here
             int selectedIndex = 0;
             KeyboardState ks = Keyboard.GetState();
-
+           
             if (startScene.Enabled)
             {
                 selectedIndex = startScene.Menu.SelectedIndex;
