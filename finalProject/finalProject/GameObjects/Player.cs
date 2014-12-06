@@ -1,4 +1,4 @@
-/* CollisionManager.cs
+/* Player.cs
  * Kim Thanh Thai, 
  * Paul Sobering 
  * Created Dec 6 2014 

@@ -26,7 +26,7 @@ namespace finalProject
         private Vector2 position;
         private List<Rectangle> frames = new List<Rectangle>();
         const int SPRITE_WIDTH = 40;
-        const int SPRITE_HEIGHT = 40; // 
+        const int SPRITE_HEIGHT = 40; 
         const int SPRITE_FRAMES = 4; // Number of frames in the animation
         const int DELAY = 40;
         int timer = 0;

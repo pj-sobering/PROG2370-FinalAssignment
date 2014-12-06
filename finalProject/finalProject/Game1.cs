@@ -1,4 +1,4 @@
-/* CollisionManager.cs
+/* Game1.cs
  * Kim Thanh Thai, 
  * Paul Sobering 
  * Created Dec 6 2014 
@@ -22,6 +22,11 @@ namespace finalProject
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
+
+        public GraphicsDeviceManager Graphics
+        {
+            get { return graphics; }
+        }
         SpriteBatch spriteBatch;
 
         private StartScene startScene;
@@ -50,8 +55,6 @@ namespace finalProject
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            Console.WriteLine(graphics.PreferredBackBufferWidth + " " + graphics.PreferredBackBufferHeight);
-            Shared.stage = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
             
             base.Initialize();
         }
@@ -75,6 +78,7 @@ namespace finalProject
         /// </summary>
         protected override void LoadContent()
         {
+            ContentManager.LoadAll(this);
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             
@@ -90,10 +94,8 @@ namespace finalProject
             startScene.show();
 
             // TODO: use this.Content to load your game content here
-            ContentManager.LoadAll(this);
-            Vector2 stage = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
-
-
+            
+            Vector2 stage = ContentManager.Stage;
 
             Texture2D topWallTex = Content.Load<Texture2D>("images/wallTopBot");
             Vector2 topWallPos = new Vector2(0, 0);

@@ -45,7 +45,20 @@ namespace finalProject
             {
                 menuItems.Add(menus[i]);
             }
-            position = new Vector2(Shared.stage.X / 2, Shared.stage.Y / 2);
+
+            Vector2 menuOffset = regularFont.MeasureString("Test");
+            foreach (string s in menuItems)
+            {
+                Vector2 test = regularFont.MeasureString(s);
+                if (test.X > menuOffset.X)
+                {
+                    menuOffset.X = test.X;
+                }
+            }
+
+            menuOffset.Y = (menuOffset.Y * menuItems.Count) /2;
+            menuOffset.X = menuOffset.X / 2;
+            position = new Vector2(ContentManager.Stage.X /2 - menuOffset.X, ContentManager.Stage.Y /2 - menuOffset.Y);
         }
 
         /// <summary>

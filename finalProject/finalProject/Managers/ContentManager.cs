@@ -93,7 +93,7 @@ namespace finalProject
 
         static public void LoadAll(Game1 game)
         {
-            
+            stage = new Vector2(game.GraphicsDevice.PresentationParameters.BackBufferWidth, game.GraphicsDevice.PresentationParameters.BackBufferHeight);
             player1Tex = game.Content.Load<Texture2D>("images/player1");
             player2Tex = game.Content.Load<Texture2D>("images/player2");
             bombTex = game.Content.Load<Texture2D>("images/bomb");
