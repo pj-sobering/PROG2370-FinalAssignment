@@ -1,3 +1,8 @@
+/* CollisionManager.cs
+ * Kim Thanh Thai, 
+ * Paul Sobering 
+ * Created Dec 6 2014 
+ */
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,6 +59,7 @@ namespace finalProject
             // TODO: Add your initialization logic here
             Console.WriteLine(graphics.PreferredBackBufferWidth + " " + graphics.PreferredBackBufferHeight);
             Shared.stage = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+            
             base.Initialize();
         }
 
@@ -78,7 +84,7 @@ namespace finalProject
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
+            
             spriteBatch = new SpriteBatch(GraphicsDevice);
             startScene = new StartScene(this, spriteBatch);
             Components.Add(startScene);
@@ -190,12 +196,6 @@ namespace finalProject
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Green);
-
-            // TODO: Add your drawing code here
-            //spriteBatch.Begin();
-            //spriteBatch.Draw(backgroundTex, new Rectangle(0, 0, Window.ClientBounds.Width, Window.ClientBounds.Height),
-            //                    null, Color.White, 0, Vector2.Zero, SpriteEffects.None, 0);
-            //spriteBatch.End();
             base.Draw(gameTime);
         }
     }

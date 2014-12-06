@@ -1,4 +1,9 @@
-﻿using System;
+﻿/* KeyBindings.cs
+ * Kim Thanh Thai, 
+ * Paul Sobering 
+ * Created Dec 6 2014 
+ */
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -8,6 +13,9 @@ using Microsoft.Xna.Framework.Input;
 
 namespace finalProject
 {
+    /// <summary>
+    /// Stores the keybindings to be used by a player.
+    /// </summary>
     public class KeyBindings
     {
         private Keys up;
@@ -46,6 +54,14 @@ namespace finalProject
             set { bomb = value; }
         }
 
+        /// <summary>
+        /// Creates an object that binds keys to possible player actions.
+        /// </summary>
+        /// <param name="up"></param>
+        /// <param name="down"></param>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <param name="bomb"></param>
         public KeyBindings(Keys up, Keys down, Keys left, Keys right, Keys bomb)
         {
             this.Up = up;

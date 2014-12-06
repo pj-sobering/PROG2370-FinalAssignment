@@ -1,3 +1,8 @@
+/* Bomb.cs
+ * Kim Thanh Thai, 
+ * Paul Sobering 
+ * Created Dec 6 2014 
+ */
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,13 +51,13 @@ namespace finalProject
         public override void Update(GameTime gameTime)
         {
             // TODO: Add your update code here
-
+            
             base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
             spriteBatch.Draw(ContentManager.BombTex, position, null, Color.White, 0, new Vector2(0,0), 1, SpriteEffects.None, 1);
             spriteBatch.End();
             base.Draw(gameTime);

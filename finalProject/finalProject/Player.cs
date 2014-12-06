@@ -1,3 +1,8 @@
+/* CollisionManager.cs
+ * Kim Thanh Thai, 
+ * Paul Sobering 
+ * Created Dec 6 2014 
+ */
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -86,6 +91,7 @@ namespace finalProject
             this.stage = stage;
             this.frameIndex = 0;
             this.bindings = keyBindings;
+            this.DrawOrder = 2;
 
             AnimationFrames();
         }
@@ -104,6 +110,9 @@ namespace finalProject
             base.Initialize();
         }
 
+        /// <summary>
+        /// Creates lists of Rectangles to use as viewports of a texture.
+        /// </summary>
         private void AnimationFrames()
         {
             Vector2 originMultiplyer = new Vector2();
@@ -149,7 +158,6 @@ namespace finalProject
                 framesDown.Add(r);
             }
         }
-
 
         /// <summary>
         /// Allows the game component to update itself.
@@ -226,6 +234,7 @@ namespace finalProject
                     {
                         bombArray[i] = new Bomb(Game, spriteBatch, position);
                         Game.Components.Add(bombArray[i]);
+                        bombArray[i].DrawOrder = 0;
                         break;
                     }
                 }
@@ -237,7 +246,7 @@ namespace finalProject
 
         public override void Draw(GameTime gameTime)
         {
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend);
             switch(direction)
             {
                 case Direction.Up:
@@ -257,8 +266,7 @@ namespace finalProject
                     framesDown.ElementAt(frameIndex), Color.White);
                 break;
                 default:
-                spriteBatch.Draw(tex, position,
-                framesDown.ElementAt(frameIndex), Color.White);
+                spriteBatch.Draw(ContentManager.Player1Tex, position, framesDown.ElementAt(frameIndex), Color.White, 0, new Vector2(0,0), new Vector2(0,0), SpriteEffects.None, 0);
                 break;
             }
             spriteBatch.End();

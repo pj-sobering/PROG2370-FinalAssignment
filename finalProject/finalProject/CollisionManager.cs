@@ -1,3 +1,8 @@
+/* CollisionManager.cs
+ * Kim Thanh Thai, 
+ * Paul Sobering 
+ * Created Dec 6 2014 
+ */
 using System;
 using System.Collections.Generic;
 using System.Linq;
