@@ -230,7 +230,7 @@ namespace finalProject
             {
                 for (int i = 0; i < bombArray.Length; i++)
                 {
-                    if (bombArray[i] == null)
+                    if (bombArray[i] == null || bombArray[i].Enabled == false)
                     {
                         bombArray[i] = new Bomb(Game, spriteBatch, position);
                         Game.Components.Add(bombArray[i]);
@@ -266,7 +266,8 @@ namespace finalProject
                     framesDown.ElementAt(frameIndex), Color.White);
                 break;
                 default:
-                spriteBatch.Draw(ContentManager.Player1Tex, position, framesDown.ElementAt(frameIndex), Color.White, 0, new Vector2(0,0), new Vector2(0,0), SpriteEffects.None, 0);
+                spriteBatch.Draw(tex, position,
+                    framesDown.ElementAt(frameIndex), Color.White);
                 break;
             }
             spriteBatch.End();

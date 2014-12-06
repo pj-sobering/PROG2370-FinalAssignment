@@ -24,6 +24,13 @@ namespace finalProject
     {
         private SpriteBatch spriteBatch;
         private Vector2 position;
+        private List<Rectangle> frames = new List<Rectangle>();
+        const int SPRITE_WIDTH = 40;
+        const int SPRITE_HEIGHT = 40; // 
+        const int SPRITE_FRAMES = 4; // Number of frames in the animation
+        const int DELAY = 40;
+        int timer = 0;
+        int frameIndex = 0;
 
         public Bomb(Game game, SpriteBatch spriteBatch, Vector2 position)
             : base(game)
@@ -40,10 +47,21 @@ namespace finalProject
         public override void Initialize()
         {
             // TODO: Add your initialization code here
-
+            AnimationFrames();
             base.Initialize();
         }
 
+        /// <summary>
+        /// Creates lists of Rectangles to use as viewports of a texture.
+        /// </summary>
+        private void AnimationFrames()
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                Rectangle r = new Rectangle(SPRITE_WIDTH * i, 0, SPRITE_WIDTH, SPRITE_HEIGHT);
+                frames.Add(r);
+            }
+        }
         /// <summary>
         /// Allows the game component to update itself.
         /// </summary>
@@ -51,14 +69,29 @@ namespace finalProject
         public override void Update(GameTime gameTime)
         {
             // TODO: Add your update code here
-            
+            if (timer < DELAY)
+            {
+                timer++;
+            }
+            else
+            {
+                if (frameIndex < SPRITE_FRAMES)
+                {
+                    frameIndex++;
+                }
+                timer = 0;
+            }
+            if (frameIndex == SPRITE_FRAMES)
+            {
+                this.Enabled = false;
+            }
             base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-            spriteBatch.Draw(ContentManager.BombTex, position, null, Color.White, 0, new Vector2(0,0), 1, SpriteEffects.None, 1);
+            spriteBatch.Begin();
+            spriteBatch.Draw(ContentManager.BombTex, position, frames.ElementAt(frameIndex), Color.White);
             spriteBatch.End();
             base.Draw(gameTime);
         }
