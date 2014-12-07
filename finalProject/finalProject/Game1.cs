@@ -1,4 +1,4 @@
-/* Game1.cs
+﻿/* Game1.cs
  * Kim Thanh Thai, 
  * Paul Sobering 
  * Created Dec 6 2014 
@@ -32,6 +32,7 @@ namespace finalProject
         private StartScene startScene;
         private HelpScene helpScene;
         private ActionScene actionScene;
+        private HowToPlayScene howtoPlay;
         Player p1;
         Player p2;
         Wall topWall;
@@ -86,8 +87,24 @@ namespace finalProject
             startScene = new StartScene(this, spriteBatch);
             Components.Add(startScene);
 
-            helpScene = new HelpScene(this, spriteBatch);
+            SpriteFont font = Content.Load<SpriteFont>("fonts/regularFont");
+            Vector2 pos = new Vector2(100, 100);
+            string message = "The general goal throughout the series is to complete the levels by strategically placing bombs" +
+                             "\n in order to kill enemies and destroy obstacles. Exploding bombs can set off other bombs, " +
+                             "\nkill or injure enemies, and destroy obstacles. However, they can also kill or injure the player character," +
+                             "\ndestroy powerups, and sometimes 'anger' the exit, causing it to generate more enemies. " +
+                             "\nMost Bomberman games also feature a multiplayer mode, where other Bombermen act as opponents, and the last " +
+                             "\none standing is the winner.";
+            helpScene = new HelpScene(this, spriteBatch, font, pos, message, Color.Gold);
             Components.Add(helpScene);
+
+            SpriteFont font1 = Content.Load<SpriteFont>("fonts/regularFont");
+            Vector2 pos1 = new Vector2(100, 100);
+            string message1 = "Move Up: W      Key Up\n" + "\nMove Down: S      Key Down\n" + "\nMove Left: A      Key Left\n" +
+                              "\nMove Right: D      Key Right\n" + "\nBomb: Space key      Pad Number 0";
+            howtoPlay = new HowToPlayScene(this, spriteBatch, font, pos1, message1, Color.Gold);
+            Components.Add(howtoPlay);
+
             actionScene = new ActionScene(this, spriteBatch);
             Components.Add(actionScene);
 
@@ -97,31 +114,31 @@ namespace finalProject
             
             Vector2 stage = ContentManager.Stage;
 
-            Texture2D topWallTex = Content.Load<Texture2D>("images/wallTopBot");
-            Vector2 topWallPos = new Vector2(0, 0);
-            topWall = new Wall(this, spriteBatch, topWallTex, topWallPos);
-            this.Components.Add(topWall);
+            //Texture2D topWallTex = Content.Load<Texture2D>("images/wallTopBot");
+            //Vector2 topWallPos = new Vector2(0, 0);
+            //topWall = new Wall(this, spriteBatch, topWallTex, topWallPos);
+            //this.Components.Add(topWall);
 
-            Texture2D botWallTex = Content.Load<Texture2D>("images/wallTopBot");
-            Vector2 botWallPos = new Vector2(0, stage.Y - botWallTex.Height);
-            botWall = new Wall(this, spriteBatch, botWallTex, botWallPos);
-            this.Components.Add(botWall);
+            //Texture2D botWallTex = Content.Load<Texture2D>("images/wallTopBot");
+            //Vector2 botWallPos = new Vector2(0, stage.Y - botWallTex.Height);
+            //botWall = new Wall(this, spriteBatch, botWallTex, botWallPos);
+            //this.Components.Add(botWall);
 
-            Texture2D leftWallTex = Content.Load<Texture2D>("images/wallLeftRight");
-            Vector2 leftWallPos = new Vector2(0, stage.Y - (topWallTex.Height + leftWallTex.Height));
-            leftWall = new Wall(this, spriteBatch, leftWallTex, leftWallPos);
-            this.Components.Add(leftWall);
+            //Texture2D leftWallTex = Content.Load<Texture2D>("images/wallLeftRight");
+            //Vector2 leftWallPos = new Vector2(0, stage.Y - (topWallTex.Height + leftWallTex.Height));
+            //leftWall = new Wall(this, spriteBatch, leftWallTex, leftWallPos);
+            //this.Components.Add(leftWall);
 
-            Texture2D rightWallTex = Content.Load<Texture2D>("images/wallLeftRight");
-            Vector2 rightWallPos = new Vector2(stage.X - rightWallTex.Width, stage.Y - (topWallTex.Height + leftWallTex.Height));
-            rightWall = new Wall(this, spriteBatch, rightWallTex, rightWallPos);
-            this.Components.Add(rightWall);
+            //Texture2D rightWallTex = Content.Load<Texture2D>("images/wallLeftRight");
+            //Vector2 rightWallPos = new Vector2(stage.X - rightWallTex.Width, stage.Y - (topWallTex.Height + leftWallTex.Height));
+            //rightWall = new Wall(this, spriteBatch, rightWallTex, rightWallPos);
+            //this.Components.Add(rightWall);
 
             Vector2 pSpeed = new Vector2(2, 2); // base speed is the same for both players;
 
             KeyBindings p1Bindings = new KeyBindings(Keys.W, Keys.S, Keys.A, Keys.D, Keys.Space);
             Vector2 p1Pos = new Vector2(0, 0);
-            
+
             p1 = new Player(this, spriteBatch, ContentManager.Player1Tex, p1Pos, pSpeed, stage, p1Bindings);
             this.Components.Add(p1);
 
@@ -165,14 +182,18 @@ namespace finalProject
                     hideAllScenes();
                     helpScene.show();
                 }
-
+                if (selectedIndex == 2 && ks.IsKeyDown(Keys.Enter))
+                {
+                    hideAllScenes();
+                    howtoPlay.show();
+                }
                 if (selectedIndex == 4 && ks.IsKeyDown(Keys.Enter))
                 {
                     this.Exit();
                 }
 
             }
-            if (helpScene.Enabled || actionScene.Enabled)
+            if (helpScene.Enabled || actionScene.Enabled || howtoPlay.Enabled)
             {
                 if (ks.IsKeyDown(Keys.Escape))
                 {

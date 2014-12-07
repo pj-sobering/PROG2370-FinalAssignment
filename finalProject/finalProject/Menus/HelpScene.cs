@@ -18,14 +18,21 @@ namespace finalProject
     public class HelpScene : GameScene
     {
         private SpriteBatch spriteBatch;
-        private Texture2D tex;
+        protected Color color;
+        protected SpriteFont font;
+        protected string message;
+        protected Vector2 position;
 
-        public HelpScene(Game game, SpriteBatch spriteBatch)
+        public HelpScene(Game game, SpriteBatch spriteBatch, SpriteFont font, Vector2 position,
+                         string message, Color color)
             : base(game)
         {
             // TODO: Construct any child components here
             this.spriteBatch = spriteBatch;
-
+            this.font = font;
+            this.position = position;
+            this.message = message;
+            this.color = color;
         }
 
         /// <summary>
@@ -53,7 +60,7 @@ namespace finalProject
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
-            spriteBatch.Draw(tex, Vector2.Zero, Color.White);
+            spriteBatch.DrawString(font, message, position, color);
             spriteBatch.End();
             base.Draw(gameTime);
         }

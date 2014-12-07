@@ -15,26 +15,24 @@ namespace finalProject
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class StartScene : GameScene
+    public class HowToPlayScene : GameScene
     {
-        private MenuComponent menu; // Make game1 can extract the menu
-        public MenuComponent Menu
-        {
-            get { return menu; }
-            set { menu = value; }
-        }
-
         private SpriteBatch spriteBatch;
-        string[] menuItems = { "Start Game", "Help", "How to play", "About", "Quit" };
+        protected Color color;
+        protected SpriteFont font;
+        protected string message;
+        protected Vector2 position;
 
-        public StartScene(Game game, SpriteBatch spriteBatch)
+        public HowToPlayScene(Game game, SpriteBatch spriteBatch, SpriteFont font, Vector2 position,
+                         string message, Color color)
             : base(game)
         {
             // TODO: Construct any child components here
             this.spriteBatch = spriteBatch;
-            menu = new MenuComponent(game, spriteBatch, game.Content.Load<SpriteFont>("fonts/regularFont"),
-                                     game.Content.Load<SpriteFont>("fonts/hilightFont"), menuItems);
-            this.Components.Add(menu);  
+            this.font = font;
+            this.position = position;
+            this.message = message;
+            this.color = color;
         }
 
         /// <summary>
@@ -57,6 +55,14 @@ namespace finalProject
             // TODO: Add your update code here
 
             base.Update(gameTime);
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            spriteBatch.Begin();
+            spriteBatch.DrawString(font, message, position, color);
+            spriteBatch.End();
+            base.Draw(gameTime);
         }
     }
 }
