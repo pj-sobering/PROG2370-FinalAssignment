@@ -246,10 +246,11 @@ namespace finalProject
                         playerSpace.Y += SPRITE_HEIGHT / 2;
                         playerSpace.Height = 1;
                         playerSpace.Width = 1;
-                        Rectangle destination = CollisionManager.EmptySpace(playerSpace, game.actionScene.grid);
-                        bombArray[i] = new Bomb(game, spriteBatch, destination);
+                        GridCell gridCell = CollisionManager.EmptySpace(playerSpace, game.actionScene.grid);
+                        bombArray[i] = new Bomb(game, spriteBatch, gridCell.Destination, game.actionScene.grid, gridCell.Coords);
                         game.Components.Add(bombArray[i]);
                         bombArray[i].DrawOrder = 0;
+                        Console.WriteLine("i= " + gridCell.Coords.X.ToString() + " j= " + gridCell.Coords.Y.ToString());
                         break;
                     }
                 }

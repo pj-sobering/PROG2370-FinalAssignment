@@ -24,23 +24,31 @@ namespace finalProject
     {
         private SpriteBatch spriteBatch;
         private Vector2 position;
+        private Rectangle destination;
         private List<Rectangle> frames = new List<Rectangle>();
         private Texture2D tex = ContentManager.BombTex;
         const int SPRITE_WIDTH = 30;
         const int SPRITE_HEIGHT = 30; 
         const int SPRITE_FRAMES = 4; // Number of frames in the animation
         const int DELAY = 40;
+        GridCell[,] grid;
+        Vector2 coords;
         int timer = 0;
         int frameIndex = 0;
-
-        public Bomb(Game1 game, SpriteBatch spriteBatch, Rectangle destination)
+        Game1 game;
+        
+        public Bomb(Game1 game, SpriteBatch spriteBatch, Rectangle destination, GridCell[,] grid, Vector2 coords)
             : base(game)
         {
             // TODO: Construct any child components here
             this.spriteBatch = spriteBatch;
             float x = destination.X + (destination.Width /2) - (SPRITE_WIDTH /2);
             float y = destination.Y;
+            this.destination = destination;
             position = new Vector2(x, y);
+            this.coords = coords;
+            this.game = game;
+            this.grid = grid;
         }
 
         /// <summary>
@@ -86,6 +94,32 @@ namespace finalProject
             }
             if (frameIndex == SPRITE_FRAMES)
             {
+                Explosion center = new Explosion(game, spriteBatch, destination, Explosion.Direction.Center);
+                game.Components.Add(center);
+                GridCell up = grid[(int)coords.X - 1, (int)coords.Y];
+                GridCell down = grid[(int)coords.X +1, (int)coords.Y];
+                GridCell left = grid[(int)coords.X, (int)coords.Y -1];
+                GridCell right = grid[(int)coords.X, (int)coords.Y +1];
+                if (up.Type != GridCell.CellType.Wall)
+                {
+                    Explosion exp = new Explosion(game,spriteBatch, up.Destination, Explosion.Direction.Up);
+                    game.Components.Add(exp);
+                }
+                if (down.Type != GridCell.CellType.Wall)
+                {
+                    Explosion exp = new Explosion(game,spriteBatch, down.Destination, Explosion.Direction.Down);
+                    game.Components.Add(exp);
+                }
+                if (left.Type != GridCell.CellType.Wall)
+                {
+                    Explosion exp = new Explosion(game, spriteBatch, left.Destination, Explosion.Direction.Left);
+                    game.Components.Add(exp);
+                }
+                if (right.Type != GridCell.CellType.Wall)
+                {
+                    Explosion exp = new Explosion(game, spriteBatch, right.Destination, Explosion.Direction.Right);
+                    game.Components.Add(exp);
+                }
                 this.Enabled = false;
             }
             base.Update(gameTime);

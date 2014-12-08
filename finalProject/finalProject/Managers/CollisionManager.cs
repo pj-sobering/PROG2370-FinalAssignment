@@ -24,6 +24,9 @@ namespace finalProject
     {
         const int SPRITE_X_OFFSET = 10;
         const int SPRITE_Y_OFFSET = 5;
+        const int GRID_HEIGHT = 13;
+        const int GRID_WIDTH = 17;
+        float width, height;
         private Player[] players;
         public GridCell[,] grid;
         private Game1 game;
@@ -35,6 +38,7 @@ namespace finalProject
             this.players = players;
             this.grid = grid;
             this.game = game;
+
         }
 
         /// <summary>
@@ -104,16 +108,23 @@ namespace finalProject
         /// </summary>
         /// <param name="playerSpace"></param>
         /// <returns></returns>
-        public static Rectangle EmptySpace(Rectangle playerSpace, GridCell[,] grid)
+        public static GridCell EmptySpace(Rectangle playerSpace, GridCell[,] grid)
         {
             foreach (GridCell gc in grid)
             {
                 if (gc.Type == GridCell.CellType.Empty && gc.Destination.Intersects(playerSpace))
                 {
-                    return gc.Destination;
+                    return gc;
                 }
             }
-            return playerSpace; 
+            return new GridCell(playerSpace, GridCell.CellType.Empty, new Vector2(1,1)) ; 
+        }
+
+        public static Vector2 GridCoords(Rectangle space)
+        {
+            int x = (int)Math.Floor(space.X / (ContentManager.Stage.X / GRID_WIDTH));
+            int y = (int)Math.Floor(space.Y / (ContentManager.Stage.Y / GRID_HEIGHT));
+            return new Vector2(x, y);
         }
     }
 }

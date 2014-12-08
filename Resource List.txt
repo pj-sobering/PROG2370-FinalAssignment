@@ -1,3 +1,4 @@
 Resource List:
 
 Bomb.png = https://cdn1.iconfinder.com/data/icons/nuvola2/128x128/apps/clanbomber.png
+Explosion.png = http://www.gamefabrique.com/games/super-bomberman-3/

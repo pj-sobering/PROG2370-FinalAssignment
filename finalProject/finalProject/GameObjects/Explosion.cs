@@ -18,49 +18,88 @@ namespace finalProject
     public class Explosion : Microsoft.Xna.Framework.DrawableGameComponent
     {
         private SpriteBatch spriteBatch;
-        private Texture2D tex;
-        private Vector2 position;
-        private Vector2 dimension;
-        private List<Rectangle> frames;
-        private int frameIndex = -1;
-        private int delay;
-        private int delayCounter;
+        private Rectangle destination;
+        const int SPRITE_WIDTH = 16;
+        const int SPRITE_HEIGHT = 16;
+        const int SPRITE_FRAMES = 5;
+        const int DELAY = 10;
+        private List<Rectangle> framesMiddle, framesVertical, framesRight, framesLeft, 
+            framesRightCap, framesLeftCap, framesTopCap, framesBottomCap;
+        enum Sprite_Y_Index  { Middle = 0, Vertical = 1, Right = 2, Left = 3, LeftCap = 4, BottomCap = 5, RightCap = 6, TopCap = 7 }
+        public enum Direction { Left, Right, Up, Down, Center, upCap, downCap, rightCap, leftCap}
+        Direction direction;
+        int frameIndex = 0;
+        int timer = 0;
 
-        public Explosion(Game game, SpriteBatch spriteBatch, Texture2D tex, Vector2 position, int delay)
+
+        public Explosion(Game1 game, SpriteBatch spriteBatch, Rectangle destination, Direction direction)
             : base(game)
         {
             // TODO: Construct any child components here
             this.spriteBatch = spriteBatch;
-            this.tex = tex;
-            this.position = position;
-            this.delay = delay;
-            dimension = new Vector2(82, 17);
-            stop();
-            createFrames();
+            this.direction = direction;
+            this.destination = destination;
+            CreateFrames();
         }
 
-        public void stop()
+        private void CreateFrames()
         {
-            this.Enabled = false;
-            this.Visible = false;
-        }
-        public void start()
-        {
-            this.Enabled = true;
-            this.Visible = true;
-        }
-        private void createFrames()
-        {
-            frames = new List<Rectangle>();
-            for (int i = 0; i < 5; i++)
+            framesMiddle = new List<Rectangle>();
+            framesVertical = new List<Rectangle>();
+            framesRight = new List<Rectangle>();
+            framesLeft = new List<Rectangle>();
+            framesRightCap = new List<Rectangle>();
+            framesLeftCap = new List<Rectangle>();
+            framesTopCap = new List<Rectangle>();
+            framesBottomCap = new List<Rectangle>();
+
+            //Middle
+            for (int i = 0; i < SPRITE_FRAMES; i++)
             {
-                for (int j = 0; j < 5; j++)
-                {
-                    int x = j * (int)dimension.X;
-                    int y = i * (int)dimension.Y;
-                    Rectangle r = new Rectangle(x, y, (int)dimension.X, (int)dimension.Y);
-                    frames.Add(r);
-                }
+                Rectangle r = new Rectangle(i * SPRITE_WIDTH, (int)Sprite_Y_Index.Middle * SPRITE_HEIGHT, SPRITE_WIDTH, SPRITE_HEIGHT);
+                framesMiddle.Add(r);
+            }
+            //Vertical
+            for (int i = 0; i < SPRITE_FRAMES; i++)
+            {
+                Rectangle r = new Rectangle(i * SPRITE_WIDTH, (int)Sprite_Y_Index.Vertical * SPRITE_HEIGHT, SPRITE_WIDTH, SPRITE_HEIGHT);
+                framesVertical.Add(r);
+            }
+            //Right
+            for (int i = 0; i < SPRITE_FRAMES; i++)
+            {
+                Rectangle r = new Rectangle(i * SPRITE_WIDTH, (int)Sprite_Y_Index.Right * SPRITE_HEIGHT, SPRITE_WIDTH, SPRITE_HEIGHT);
+                framesRight.Add(r);
+            }
+            //Left
+            for (int i = SPRITE_FRAMES; i > 0; i--)
+            {
+                Rectangle r = new Rectangle((i -1) * SPRITE_WIDTH, (int)Sprite_Y_Index.Left * SPRITE_HEIGHT, SPRITE_WIDTH, SPRITE_HEIGHT);
+                framesLeft.Add(r);
+            }
+            //LeftCap
+            for (int i = SPRITE_FRAMES; i > 0; i--)
+            {
+                Rectangle r = new Rectangle((i -1) * SPRITE_WIDTH, (int)Sprite_Y_Index.LeftCap * SPRITE_HEIGHT, SPRITE_WIDTH, SPRITE_HEIGHT);
+                framesLeftCap.Add(r);
+            }
+            //Bottom Cap
+            for (int i = 0; i < SPRITE_FRAMES; i++)
+            {
+                Rectangle r = new Rectangle(i * SPRITE_WIDTH, (int)Sprite_Y_Index.BottomCap * SPRITE_HEIGHT, SPRITE_WIDTH, SPRITE_HEIGHT);
+                framesBottomCap.Add(r);
+            }
+            //Right Cap
+            for (int i = 0; i < SPRITE_FRAMES; i++)
+            {
+                Rectangle r = new Rectangle(i * SPRITE_WIDTH, (int)Sprite_Y_Index.RightCap * SPRITE_HEIGHT, SPRITE_WIDTH, SPRITE_HEIGHT);
+                framesRightCap.Add(r);
+            }
+            //Top Cap
+            for (int i = 0; i < SPRITE_FRAMES; i++)
+            {
+                Rectangle r = new Rectangle(i * SPRITE_WIDTH, (int)Sprite_Y_Index.TopCap * SPRITE_HEIGHT, SPRITE_WIDTH, SPRITE_HEIGHT);
+                framesTopCap.Add(r);
             }
         }
 
@@ -83,29 +122,56 @@ namespace finalProject
         public override void Update(GameTime gameTime)
         {
             // TODO: Add your update code here
-            delayCounter++;
-            if (delayCounter > delay)
+            if (timer < DELAY)
             {
-                frameIndex++;
-                if (frameIndex > 24)
-                {
-                    frameIndex = -1;
-                    stop();
-                }
-                delayCounter = 0;
+                timer++;
             }
-
+            else
+            {
+                if (frameIndex < SPRITE_FRAMES)
+                {
+                    frameIndex++;
+                }
+                timer = 0;
+            }
+            if (frameIndex == SPRITE_FRAMES)
+            {
+                this.Visible = false;
+                this.Enabled = false;
+            }
             base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
-            spriteBatch.Begin();
-            if (frameIndex >= 0)
+            switch (direction)
             {
-                spriteBatch.Draw(tex, position, frames.ElementAt<Rectangle>(frameIndex), Color.White); 
+                case Direction.Center:
+                    spriteBatch.Begin();
+                    spriteBatch.Draw(ContentManager.ExplosionTex, destination, framesMiddle.ElementAt(frameIndex), Color.White);
+                    spriteBatch.End();
+                    break;
+                case Direction.Down:
+                    spriteBatch.Begin();
+                    spriteBatch.Draw(ContentManager.ExplosionTex, destination, framesBottomCap.ElementAt(frameIndex), Color.White);
+                    spriteBatch.End();
+                    break;
+                case Direction.Up:
+                    spriteBatch.Begin();
+                    spriteBatch.Draw(ContentManager.ExplosionTex, destination, framesTopCap.ElementAt(frameIndex), Color.White);
+                    spriteBatch.End();
+                    break;
+                case Direction.Left:
+                    spriteBatch.Begin();
+                    spriteBatch.Draw(ContentManager.ExplosionTex, destination, framesLeftCap.ElementAt(frameIndex), Color.White);
+                    spriteBatch.End();
+                    break;
+                case Direction.Right:
+                    spriteBatch.Begin();
+                    spriteBatch.Draw(ContentManager.ExplosionTex, destination, framesRightCap.ElementAt(frameIndex), Color.White);
+                    spriteBatch.End();
+                    break;
             }
-            spriteBatch.End();
             base.Draw(gameTime);
         }
     }

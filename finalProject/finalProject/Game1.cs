@@ -99,7 +99,7 @@ namespace finalProject
             Components.Add(howtoPlay);
 
             actionScene = new ActionScene(this, spriteBatch);
-            actionScene.DrawOrder = 3;
+            actionScene.Enabled = false;
             Components.Add(actionScene);
 
             startScene.show();
@@ -121,6 +121,7 @@ namespace finalProject
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+
             // TODO: Add your update logic here
             int selectedIndex = 0;
             KeyboardState ks = Keyboard.GetState();

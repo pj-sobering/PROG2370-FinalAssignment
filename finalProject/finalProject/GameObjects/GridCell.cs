@@ -26,10 +26,21 @@ namespace finalProject
             set { type = value; }
         }
 
-        public GridCell(Rectangle destination, CellType blockType)
+        Vector2 coords;
+
+        public Vector2 Coords
+        {
+            get { return coords; }
+            set { coords = value; }
+        }
+
+        public GridCell(Rectangle destination, CellType blockType, Vector2 coords)
         {
             this.Destination = destination;
             this.type = blockType;
+            this.coords = coords;
         }
+
+        
     }
 }

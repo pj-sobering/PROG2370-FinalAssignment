@@ -16,9 +16,10 @@ namespace finalProject
     /// </summary>
     public class ActionScene : GameScene
     {
+        const int DESTRUCTABLE_COUNT = 50;
+        const int STARTING_AREA_CLEAR = 3;
         const int GRID_HEIGHT = 13;
         const int GRID_WIDTH = 17;
-        const int DESTRUCTABLE_COUNT = 50;
         private SpriteBatch spriteBatch;
         private Vector2 stage;
         public Player[] players;
@@ -65,12 +66,13 @@ namespace finalProject
             {
                 for (int j = 0; j < GRID_WIDTH; j++)
                 {
-                    Rectangle r = new Rectangle((int)(j * width),(int)(i * height), (int)width, (int)height);
+                     ;
+                     Rectangle r = new Rectangle((int)Math.Ceiling(width * j), (int)Math.Ceiling(height * i), (int)width +1, (int)height +1);
                     // Set up the walls along the border
                     if (i == 0 || i == GRID_HEIGHT - 1 || j == 0 || j == GRID_WIDTH - 1)
                     {
                         Wall wall = new Wall(Game, spriteBatch, r, false);
-                        GridCell gc = new GridCell(r, GridCell.CellType.Wall);
+                        GridCell gc = new GridCell(r, GridCell.CellType.Wall, new Vector2(i,j));
                         grid[i, j] = gc;
                         this.Components.Add(wall);
                     }
@@ -78,13 +80,13 @@ namespace finalProject
                     else if (i % 2 == 0 && j % 2 == 0)
                     {
                         Wall wall = new Wall(Game, spriteBatch, r, false);
-                        GridCell gc = new GridCell(r, GridCell.CellType.Wall);
+                        GridCell gc = new GridCell(r, GridCell.CellType.Wall, new Vector2(i,j));
                         grid[i, j] = gc;
                         this.Components.Add(wall);
                     }
                     else
                     {
-                        GridCell gc = new GridCell(r, GridCell.CellType.Empty);
+                        GridCell gc = new GridCell(r, GridCell.CellType.Empty, new Vector2(i,j));
                        grid[i,j] = gc;
 
                     }
@@ -101,21 +103,22 @@ namespace finalProject
                 
                 if (grid[i, j].Type == GridCell.CellType.Empty)
                 {
-                   if (i == 1 && j == 1)
+                   if (i < STARTING_AREA_CLEAR && j < STARTING_AREA_CLEAR)
                    {
                        // ensures player one starting block is always empty.
                        continue;
                    }
-                   if (i == GRID_HEIGHT -2 && j == GRID_WIDTH -2)
+                   if (i > (GRID_HEIGHT - STARTING_AREA_CLEAR) && j > GRID_WIDTH - STARTING_AREA_CLEAR)
                    {
-                       // ensures player one starting block is always empty.
+                       // ensures player one starting areas is always empty.
                        continue;
                    }
-                   Rectangle r = new Rectangle((int)(j * width),(int)(i * height), (int)width, (int)height);
-                   Wall destructable = new Wall(Game, spriteBatch, r, true );
-                   grid[i, j] = new GridCell(r, GridCell.CellType.Destructable);
+                   Rectangle r = new Rectangle((int)Math.Ceiling(width * j), (int)Math.Ceiling(height * i), (int)width, (int)height +1);
+                   Wall destructable = new Wall(Game, spriteBatch, r, true);
+                   grid[i, j] = new GridCell(r, GridCell.CellType.Destructable, new Vector2(i,j));
                    this.Components.Add(destructable);
                    destructableCounter++;
+                   Console.WriteLine("Looping through grid" + destructableCounter.ToString());
                 }
 
             }
