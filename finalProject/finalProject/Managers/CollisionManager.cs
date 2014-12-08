@@ -57,42 +57,63 @@ namespace finalProject
             // TODO: Add your update code here
             foreach (Player p in players)
             {
-                Rectangle pRec = p.getBound();
+                Rectangle pRec = p.getBounds();
                 pRec.X += SPRITE_X_OFFSET;
                 pRec.Width -= SPRITE_X_OFFSET;
                 pRec.Y += SPRITE_Y_OFFSET;
                 pRec.Height -= SPRITE_Y_OFFSET;
+                bool colliding = false;
                 foreach (GridCell gc in grid)
                 {
                     if (gc != null)
                     {
-                        if (gc.BlockType == ContentManager.BlockType.Wall || gc.BlockType == ContentManager.BlockType.Destructable)
+                        if (gc.Type == GridCell.CellType.Wall || gc.Type == GridCell.CellType.Destructable)
                         {
                             if (pRec.Intersects(gc.Destination))
                             {
-
-                                switch (p.direction)
-                                {
-                                    case Player.Direction.Up:
-                                        p.Position = new Vector2(p.Position.X, p.Position.Y + p.Speed.Y);
-                                        break;
-                                    case Player.Direction.Down:
-                                        p.Position = new Vector2(p.Position.X, p.Position.Y - p.Speed.Y);
-                                        break;
-                                    case Player.Direction.Left:
-                                        p.Position = new Vector2(p.Position.X + p.Speed.X, p.Position.Y);
-                                        break;
-                                    case Player.Direction.Right:
-                                        p.Position = new Vector2(p.Position.X - p.Speed.X, p.Position.Y);
-                                        break;
-                                }
+                                colliding = true;
                             }
                         }
+                    }
+                }
+                if (colliding == true)
+                {
+                    switch (p.direction)
+                    {
+                        case Player.Direction.Up:
+                            p.Position = new Vector2(p.Position.X, p.Position.Y + p.Speed.Y);
+                            break;
+                        case Player.Direction.Down:
+                            p.Position = new Vector2(p.Position.X, p.Position.Y - p.Speed.Y);
+                            break;
+                        case Player.Direction.Left:
+                            p.Position = new Vector2(p.Position.X + p.Speed.X, p.Position.Y);
+                            break;
+                        case Player.Direction.Right:
+                            p.Position = new Vector2(p.Position.X - p.Speed.X, p.Position.Y);
+                            break;
                     }
                 }
             }
             
             base.Update(gameTime);
+        }
+
+        /// <summary>
+        /// Returns a rectangle that represents a grid space, used to snap objects to grid.
+        /// </summary>
+        /// <param name="playerSpace"></param>
+        /// <returns></returns>
+        public static Rectangle EmptySpace(Rectangle playerSpace, GridCell[,] grid)
+        {
+            foreach (GridCell gc in grid)
+            {
+                if (gc.Type == GridCell.CellType.Empty && gc.Destination.Intersects(playerSpace))
+                {
+                    return gc.Destination;
+                }
+            }
+            return playerSpace; 
         }
     }
 }

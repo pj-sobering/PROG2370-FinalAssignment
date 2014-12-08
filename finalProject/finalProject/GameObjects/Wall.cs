@@ -19,13 +19,15 @@ namespace finalProject
     {
         private SpriteBatch spriteBatch;
         private Rectangle destination;
+        private bool destructible;
 
-        public Wall(Game game, SpriteBatch spriteBatch, Rectangle destination)
+        public Wall(Game game, SpriteBatch spriteBatch, Rectangle destination, bool destructible)
             : base(game)
         {
             // TODO: Construct any child components here
             this.spriteBatch = spriteBatch;
             this.destination = destination;
+            this.destructible = destructible;
         }
 
         /// <summary>
@@ -53,7 +55,14 @@ namespace finalProject
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
-            spriteBatch.Draw(ContentManager.WallTex, destination, Color.White);
+            if (destructible == false)
+            {
+                spriteBatch.Draw(ContentManager.WallTex, destination, Color.White);
+            }
+            else
+            {
+                spriteBatch.Draw(ContentManager.WallTex, destination, Color.Brown);
+            }
             spriteBatch.End();
             base.Draw(gameTime);
         }

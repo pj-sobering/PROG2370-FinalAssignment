@@ -58,7 +58,7 @@ namespace finalProject
             set { speed = value; }
         }
 
-        private Game game;
+        private Game1 game;
         private List<Rectangle> framesUp = new List<Rectangle>();
         private List<Rectangle> framesDown = new List<Rectangle>();
         private List<Rectangle> framesLeft = new List<Rectangle>();
@@ -81,7 +81,7 @@ namespace finalProject
         /// <param name="speed"></param>
         /// <param name="stage"></param>
         /// <param name="keyBindings"></param>
-        public Player(Game game, SpriteBatch spriteBatch, Texture2D tex, Vector2 position, Vector2 speed,
+        public Player(Game1 game, SpriteBatch spriteBatch, Texture2D tex, Vector2 position, Vector2 speed,
             KeyBindings keyBindings, Direction direction)
             : base(game)
         {
@@ -239,7 +239,15 @@ namespace finalProject
                 {
                     if (bombArray[i] == null || bombArray[i].Enabled == false)
                     {
-                        bombArray[i] = new Bomb(Game, spriteBatch, position);
+                        // Gets the players bounds and focuses the coordinates on a small point in the center 
+                        // This gives the collision manager greater accuracy in determining a destination for the bomb
+                        Rectangle playerSpace = getBounds();
+                        playerSpace.X += SPRITE_WIDTH / 2;
+                        playerSpace.Y += SPRITE_HEIGHT / 2;
+                        playerSpace.Height = 1;
+                        playerSpace.Width = 1;
+                        Rectangle destination = CollisionManager.EmptySpace(playerSpace, game.actionScene.grid);
+                        bombArray[i] = new Bomb(game, spriteBatch, destination);
                         game.Components.Add(bombArray[i]);
                         bombArray[i].DrawOrder = 0;
                         break;
@@ -278,7 +286,7 @@ namespace finalProject
             base.Draw(gameTime);
         }
 
-        public Rectangle getBound()
+        public Rectangle getBounds()
         {
             return new Rectangle((int)position.X, (int)position.Y, SPRITE_WIDTH, SPRITE_HEIGHT);
         }

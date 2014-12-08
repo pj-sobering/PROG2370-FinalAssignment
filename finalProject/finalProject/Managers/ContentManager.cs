@@ -99,8 +99,6 @@ namespace finalProject
             get { return ContentManager.playerDie; }
         }
 
-        public enum BlockType { Wall, Destructable }
-
         static public void LoadAll(Game1 game)
         {
             stage = new Vector2(game.Graphics.PreferredBackBufferWidth, game.Graphics.PreferredBackBufferHeight);

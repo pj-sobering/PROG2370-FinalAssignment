@@ -9,7 +9,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
-
 namespace finalProject
 {
     /// <summary>
@@ -19,11 +18,13 @@ namespace finalProject
     {
         const int GRID_HEIGHT = 13;
         const int GRID_WIDTH = 17;
+        const int DESTRUCTABLE_COUNT = 50;
         private SpriteBatch spriteBatch;
         private Vector2 stage;
         public Player[] players;
         public GridCell[,] grid; // 13 x 17
         float width, height;
+
 
         public ActionScene(Game1 game, SpriteBatch spriteBatch)
             : base(game)
@@ -68,23 +69,55 @@ namespace finalProject
                     // Set up the walls along the border
                     if (i == 0 || i == GRID_HEIGHT - 1 || j == 0 || j == GRID_WIDTH - 1)
                     {
-                        Wall wall = new Wall(Game, spriteBatch, r);
-                        GridCell gc = new GridCell(r, ContentManager.BlockType.Wall);
+                        Wall wall = new Wall(Game, spriteBatch, r, false);
+                        GridCell gc = new GridCell(r, GridCell.CellType.Wall);
                         grid[i, j] = gc;
                         this.Components.Add(wall);
                     }
                     // Set up the walls inside the box;
                     else if (i % 2 == 0 && j % 2 == 0)
                     {
-                        Wall wall = new Wall(Game, spriteBatch, r);
-                        GridCell gc = new GridCell(r, ContentManager.BlockType.Wall);
+                        Wall wall = new Wall(Game, spriteBatch, r, false);
+                        GridCell gc = new GridCell(r, GridCell.CellType.Wall);
                         grid[i, j] = gc;
                         this.Components.Add(wall);
                     }
-                    // Set up the destructable walls
+                    else
+                    {
+                        GridCell gc = new GridCell(r, GridCell.CellType.Empty);
+                       grid[i,j] = gc;
 
-                    
+                    }
                 }
+            }
+
+            // Set up the destructable walls
+            int destructableCounter = 0;
+            Random rand = new Random();
+            while (destructableCounter < DESTRUCTABLE_COUNT)
+            {
+                int i = rand.Next(1, GRID_HEIGHT - 1);
+                int j = rand.Next(1, GRID_WIDTH - 1);
+                
+                if (grid[i, j].Type == GridCell.CellType.Empty)
+                {
+                   if (i == 1 && j == 1)
+                   {
+                       // ensures player one starting block is always empty.
+                       continue;
+                   }
+                   if (i == GRID_HEIGHT -2 && j == GRID_WIDTH -2)
+                   {
+                       // ensures player one starting block is always empty.
+                       continue;
+                   }
+                   Rectangle r = new Rectangle((int)(j * width),(int)(i * height), (int)width, (int)height);
+                   Wall destructable = new Wall(Game, spriteBatch, r, true );
+                   grid[i, j] = new GridCell(r, GridCell.CellType.Destructable);
+                   this.Components.Add(destructable);
+                   destructableCounter++;
+                }
+
             }
 
         }

@@ -25,6 +25,7 @@ namespace finalProject
         private SpriteBatch spriteBatch;
         private Vector2 position;
         private List<Rectangle> frames = new List<Rectangle>();
+        private Texture2D tex = ContentManager.BombTex;
         const int SPRITE_WIDTH = 30;
         const int SPRITE_HEIGHT = 30; 
         const int SPRITE_FRAMES = 4; // Number of frames in the animation
@@ -32,12 +33,14 @@ namespace finalProject
         int timer = 0;
         int frameIndex = 0;
 
-        public Bomb(Game game, SpriteBatch spriteBatch, Vector2 position)
+        public Bomb(Game1 game, SpriteBatch spriteBatch, Rectangle destination)
             : base(game)
         {
             // TODO: Construct any child components here
             this.spriteBatch = spriteBatch;
-            this.position = position;
+            float x = destination.X + (destination.Width /2) - (SPRITE_WIDTH /2);
+            float y = destination.Y;
+            position = new Vector2(x, y);
         }
 
         /// <summary>

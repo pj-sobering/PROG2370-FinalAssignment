@@ -1,24 +1,27 @@
-Animations
+Adding players to Action Scene: 
+	The issue you were having was caused by the distinction between Game and Game1.
+	Player asks for a Game1 object in it's constructor, but the ActionScene was passing
+	an object of Game type. 
 
-Player Character - facing 4 directions, walking in 4 directions = 8.
-Bomb
-Building
-Obstacle
+I've added a resources text file here where you can list the sources of where you got the images
+We have to declare any resources we got online in the assignment.
 
+Here is some logic for what's left to do.
 
-String Menu
-	Start
-	Instructions
-	Load
-	Exit
+As of right now - 
+we need a sprite for monsters.
+a monster object needs to be created.
+Monsters should move around randomly 
 
-Logic
-	Player places bomb at current position (underneith player sprite).
-	Bomb explodes, causing damage down paths to everyone except the player who planted the bomb. 
-	Blast travels in all directions for a total of 20 spaces, divided by whichever direction the blast can go
-	If the blast can only go in two directions, the blast will travel 10 spaces in each direction possible.
-	If the blast can go in three directions, the blast will travel 6.666 spaces in each direction possible.
-	If the blast can go in 4 directions, the blast will travel 5 spaces in each direction possible.
-	Once the board is cleared, the player advances to the next level.
-	Each level provides more objects to clear. If the player touches a clearable object, the player fails the level.
+the explosion object needs to be finished an implimented.
+
+Bombs should snap to the grid (not be spawned directly under the player, but at the origin
+of the rectangle that the player is standing on)
+
+When the bomb explodes, an explosion object should check the grid to see if there are any
+non destructable walls around it. The explosion will not grow in the direction where there is a wall beside it.
+If the explosion touches a destructible wall, the destructible wall is removed.
+
+A score system needs be implimented, whenever a player blows something up - they get a point.
+
 

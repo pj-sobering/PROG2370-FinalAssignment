@@ -17,18 +17,19 @@ namespace finalProject
             set { destination = value; }
         }
 
-        ContentManager.BlockType blockType; 
+        public enum CellType { Empty, Wall, Destructable }
 
-        public ContentManager.BlockType BlockType
+        CellType type;
+        public CellType Type
         {
-            get { return blockType; }
-            set { blockType = value; }
+            get { return type; }
+            set { type = value; }
         }
 
-        public GridCell(Rectangle destination, ContentManager.BlockType blockType)
+        public GridCell(Rectangle destination, CellType blockType)
         {
             this.Destination = destination;
-            this.blockType = blockType;
+            this.type = blockType;
         }
     }
 }
