@@ -18,16 +18,14 @@ namespace finalProject
     public class Wall : Microsoft.Xna.Framework.DrawableGameComponent
     {
         private SpriteBatch spriteBatch;
-        private Texture2D tex;
-        private Vector2 position;
+        private Rectangle destination;
 
-        public Wall(Game game, SpriteBatch spriteBatch, Texture2D tex, Vector2 position)
+        public Wall(Game game, SpriteBatch spriteBatch, Rectangle destination)
             : base(game)
         {
             // TODO: Construct any child components here
             this.spriteBatch = spriteBatch;
-            this.tex = tex;
-            this.position = position;
+            this.destination = destination;
         }
 
         /// <summary>
@@ -55,14 +53,14 @@ namespace finalProject
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
-            spriteBatch.Draw(tex, position, Color.White);
+            spriteBatch.Draw(ContentManager.WallTex, destination, Color.White);
             spriteBatch.End();
             base.Draw(gameTime);
         }
 
         public Rectangle getBound()
         {
-            return new Rectangle((int)position.X, (int)position.Y, tex.Width, tex.Height);
+            return destination;
         }
     }
 }

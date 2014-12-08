@@ -17,55 +17,76 @@ namespace finalProject
     /// </summary>
     public class ActionScene : GameScene
     {
+        const int GRID_HEIGHT = 13;
+        const int GRID_WIDTH = 17;
         private SpriteBatch spriteBatch;
         private Vector2 stage;
-        Wall topWall;
-        Wall botWall;
-        Wall leftWall;
-        Wall rightWall;
-        Player p1;
-        Player p2;
+        public Player[] players;
+        public GridCell[,] grid; // 13 x 17
+        float width, height;
 
-        public ActionScene(Game game, SpriteBatch spriteBatch)
+        public ActionScene(Game1 game, SpriteBatch spriteBatch)
             : base(game)
         {
             // TODO: Construct any child components here
             this.spriteBatch = spriteBatch;
             this.stage = ContentManager.Stage;
+            GenerateGrid();
+            Vector2 pSpeed = new Vector2(2, 2); // base speed is the same for both players;
+
+            players = new Player[2];
+            KeyBindings p1Bindings = new KeyBindings(Keys.W, Keys.S, Keys.A, Keys.D, Keys.Space);
+            Vector2 p1Pos = new Vector2(width +1, height +1);
+            Player p1 = new Player(game, spriteBatch, ContentManager.Player1Tex, p1Pos, pSpeed, p1Bindings, Player.Direction.Right);
+            p1.DrawOrder = 2;
+            players[0] = p1;
+            this.Components.Add(p1);
 
 
-            Texture2D topWallTex = game.Content.Load<Texture2D>("images/wallTopBot");
-            Vector2 topWallPos = new Vector2(0, 0);
-            topWall = new Wall(game, spriteBatch, topWallTex, topWallPos);
-            this.Components.Add(topWall);
+            KeyBindings p2Bindings = new KeyBindings(Keys.Up, Keys.Down, Keys.Left, Keys.Right, Keys.NumPad0);
+            Vector2 p2Pos = new Vector2(width * (GRID_WIDTH -2), height * (GRID_HEIGHT -2)); // dimensions of both players are constant, using p1's values because it's already instantiated.
+            Player p2 = new Player(game, spriteBatch, ContentManager.Player2Tex, p2Pos, pSpeed, p2Bindings, Player.Direction.Left);
+            players[1] = p2;
+            p2.DrawOrder = 2;
+            this.Components.Add(p2);
+            CollisionManager cm = new CollisionManager(game, players, grid);
+            this.Components.Add(cm);
+            
+        }
 
-            Texture2D botWallTex = game.Content.Load<Texture2D>("images/wallTopBot");
-            Vector2 botWallPos = new Vector2(0, stage.Y - botWallTex.Height);
-            botWall = new Wall(game, spriteBatch, botWallTex, botWallPos);
-            this.Components.Add(botWall);
+        private void GenerateGrid()
+        {
+            grid = new GridCell[GRID_HEIGHT, GRID_WIDTH];
+            width = ContentManager.Stage.X / GRID_WIDTH;
+            height = ContentManager.Stage.Y / GRID_HEIGHT;
 
-            Texture2D leftWallTex = game.Content.Load<Texture2D>("images/wallLeftRight");
-            Vector2 leftWallPos = new Vector2(0, stage.Y - (topWallTex.Height + leftWallTex.Height));
-            leftWall = new Wall(game, spriteBatch, leftWallTex, leftWallPos);
-            this.Components.Add(leftWall);
+            for (int i = 0; i < GRID_HEIGHT; i++)
+            {
+                for (int j = 0; j < GRID_WIDTH; j++)
+                {
+                    Rectangle r = new Rectangle((int)(j * width),(int)(i * height), (int)width, (int)height);
+                    // Set up the walls along the border
+                    if (i == 0 || i == GRID_HEIGHT - 1 || j == 0 || j == GRID_WIDTH - 1)
+                    {
+                        Wall wall = new Wall(Game, spriteBatch, r);
+                        GridCell gc = new GridCell(r, ContentManager.BlockType.Wall);
+                        grid[i, j] = gc;
+                        this.Components.Add(wall);
+                    }
+                    // Set up the walls inside the box;
+                    else if (i % 2 == 0 && j % 2 == 0)
+                    {
+                        Wall wall = new Wall(Game, spriteBatch, r);
+                        GridCell gc = new GridCell(r, ContentManager.BlockType.Wall);
+                        grid[i, j] = gc;
+                        this.Components.Add(wall);
+                    }
+                    // Set up the destructable walls
 
-            Texture2D rightWallTex = game.Content.Load<Texture2D>("images/wallLeftRight");
-            Vector2 rightWallPos = new Vector2(stage.X - rightWallTex.Width, stage.Y - (topWallTex.Height + leftWallTex.Height));
-            rightWall = new Wall(game, spriteBatch, rightWallTex, rightWallPos);
-            this.Components.Add(rightWall);
+                    
+                }
+            }
 
-            //Vector2 pSpeed = new Vector2(2, 2); // base speed is the same for both players;
-
-            //KeyBindings p1Bindings = new KeyBindings(Keys.W, Keys.S, Keys.A, Keys.D, Keys.Space);
-            //Vector2 p1Pos = new Vector2(0, 0);
-
-            //p1 = new Player(game, spriteBatch, ContentManager.Player1Tex, p1Pos, pSpeed, stage, p1Bindings);
-            //this.Components.Add(p1);
-
-            //KeyBindings p2Bindings = new KeyBindings(Keys.Up, Keys.Down, Keys.Left, Keys.Right, Keys.NumPad0);
-            //Vector2 p2Pos = new Vector2(stage.X - p1.Width, stage.Y - p1.Height); // dimensions of both players are constant, using p1's values because it's already instantiated.
-            //p2 = new Player(game, spriteBatch, ContentManager.Player2Tex, p2Pos, pSpeed, stage, p2Bindings);
-            //this.Components.Add(p2);
         }
 
         /// <summary>

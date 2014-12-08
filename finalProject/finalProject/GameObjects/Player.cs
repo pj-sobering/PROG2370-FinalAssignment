@@ -30,7 +30,7 @@ namespace finalProject
             get { return SPRITE_WIDTH; }
         } 
 
-        const int SPRITE_HEIGHT = 60; // height of a single image in the sprite file
+        const int SPRITE_HEIGHT = 30; // height of a single image in the sprite file
 
         public int Height
         {
@@ -57,7 +57,8 @@ namespace finalProject
             get { return speed; }
             set { speed = value; }
         }
-        private Vector2 stage;
+
+        private Game game;
         private List<Rectangle> framesUp = new List<Rectangle>();
         private List<Rectangle> framesDown = new List<Rectangle>();
         private List<Rectangle> framesLeft = new List<Rectangle>();
@@ -65,9 +66,10 @@ namespace finalProject
         private KeyBindings bindings;
         int delayCounter = 0;
         int frameIndex = 0;
-        enum Direction { Up, Down, Left, Right };
-        Direction direction = Direction.Down;
+        public enum Direction { Up, Down, Left, Right };
+        public Direction direction = Direction.Down;
         private Bomb[] bombArray = new Bomb[BOMBS_PER_PLAYER];
+        
 
         /// <summary>
         /// Constructs a Player object
@@ -79,8 +81,8 @@ namespace finalProject
         /// <param name="speed"></param>
         /// <param name="stage"></param>
         /// <param name="keyBindings"></param>
-        public Player(Game1 game, SpriteBatch spriteBatch, Texture2D tex, Vector2 position, Vector2 speed,
-                      Vector2 stage, KeyBindings keyBindings)
+        public Player(Game game, SpriteBatch spriteBatch, Texture2D tex, Vector2 position, Vector2 speed,
+            KeyBindings keyBindings, Direction direction)
             : base(game)
         {
             // TODO: Construct any child components here
@@ -88,11 +90,11 @@ namespace finalProject
             this.position = position;
             this.tex = tex;
             this.speed = speed;
-            this.stage = stage;
             this.frameIndex = 0;
             this.bindings = keyBindings;
             this.DrawOrder = 2;
-
+            this.game = game;
+            this.direction = direction;
             AnimationFrames();
         }
 
@@ -168,7 +170,8 @@ namespace finalProject
             // TODO: Add your update code here
 
             KeyboardState ks = Keyboard.GetState(); 
-            if (ks.IsKeyDown(bindings.Up) && !ks.IsKeyDown(bindings.Right) && !ks.IsKeyDown(bindings.Left) && ! ks.IsKeyDown(bindings.Down))
+            if (ks.IsKeyDown(bindings.Up) && !ks.IsKeyDown(bindings.Right) 
+                && !ks.IsKeyDown(bindings.Left) && ! ks.IsKeyDown(bindings.Down))
             {
                 
                 position.Y -= speed.Y;
@@ -179,17 +182,19 @@ namespace finalProject
                 }
                 delayCounter++;
             }
-            if (ks.IsKeyDown(bindings.Down) && !ks.IsKeyDown(bindings.Right) && !ks.IsKeyDown(bindings.Left) && !ks.IsKeyDown(bindings.Right))
+            if (ks.IsKeyDown(bindings.Down) && !ks.IsKeyDown(bindings.Right) 
+                && !ks.IsKeyDown(bindings.Left) && !ks.IsKeyDown(bindings.Right))
             {
                 direction = Direction.Down;
                 position.Y += speed.Y;
-                if (position.Y > stage.Y - SPRITE_HEIGHT)
+                if (position.Y > ContentManager.Stage.Y - SPRITE_HEIGHT)
                 {
-                    position.Y = stage.Y - SPRITE_HEIGHT;
+                    position.Y = ContentManager.Stage.Y - SPRITE_HEIGHT;
                 }
                 delayCounter++;
             }
-            if (ks.IsKeyDown(bindings.Left) && !ks.IsKeyDown(bindings.Right) && !ks.IsKeyDown(bindings.Up) && !ks.IsKeyDown(bindings.Down))
+            if (ks.IsKeyDown(bindings.Left) && !ks.IsKeyDown(bindings.Right)
+                && !ks.IsKeyDown(bindings.Up) && !ks.IsKeyDown(bindings.Down))
             {
                 direction = Direction.Left;
                 position.X -= speed.X;
@@ -200,13 +205,14 @@ namespace finalProject
                 }
                 delayCounter++;
             }
-            if (ks.IsKeyDown(bindings.Right) && !ks.IsKeyDown(bindings.Up) && !ks.IsKeyDown(bindings.Left) && !ks.IsKeyDown(bindings.Down))
+            if (ks.IsKeyDown(bindings.Right) && !ks.IsKeyDown(bindings.Up) 
+                && !ks.IsKeyDown(bindings.Left) && !ks.IsKeyDown(bindings.Down))
             {
                 direction = Direction.Right;
                 position.X += speed.X;
-                if (position.X > stage.X - SPRITE_WIDTH)
+                if (position.X > ContentManager.Stage.X - SPRITE_WIDTH)
                 {
-                    position.X = stage.X - SPRITE_WIDTH;
+                    position.X = ContentManager.Stage.X - SPRITE_WIDTH;
                 }
                 delayCounter++;
             }
@@ -221,7 +227,8 @@ namespace finalProject
                 frameIndex = 1;
             }
 
-            if (ks.IsKeyUp(bindings.Up) && ks.IsKeyUp(bindings.Down) && ks.IsKeyUp(bindings.Left) && ks.IsKeyUp(bindings.Right))
+            if (ks.IsKeyUp(bindings.Up) && ks.IsKeyUp(bindings.Down) 
+                && ks.IsKeyUp(bindings.Left) && ks.IsKeyUp(bindings.Right))
             {
                 frameIndex = 0;
             }
@@ -233,7 +240,7 @@ namespace finalProject
                     if (bombArray[i] == null || bombArray[i].Enabled == false)
                     {
                         bombArray[i] = new Bomb(Game, spriteBatch, position);
-                        Game.Components.Add(bombArray[i]);
+                        game.Components.Add(bombArray[i]);
                         bombArray[i].DrawOrder = 0;
                         break;
                     }
@@ -249,24 +256,21 @@ namespace finalProject
             spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend);
             switch(direction)
             {
+                    
                 case Direction.Up:
-                    spriteBatch.Draw(tex, position,
-                    framesUp.ElementAt(frameIndex), Color.White);
+                    spriteBatch.Draw(tex, position, framesUp.ElementAt(frameIndex), Color.White, 0, new Vector2(0,0), 1f, SpriteEffects.None, 0);
                 break;
                 case Direction.Left:
-                    spriteBatch.Draw(tex, position,
-                    framesLeft.ElementAt(frameIndex), Color.White);
+                    spriteBatch.Draw(tex, position, framesLeft.ElementAt(frameIndex), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
                 break;
                 case Direction.Right:
-                    spriteBatch.Draw(tex, position,
-                    framesRight.ElementAt(frameIndex), Color.White);
+                    spriteBatch.Draw(tex, position, framesRight.ElementAt(frameIndex), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
                 break;
                 case Direction.Down:
-                    spriteBatch.Draw(tex, position,
-                    framesDown.ElementAt(frameIndex), Color.White);
+                    spriteBatch.Draw(tex, position, framesDown.ElementAt(frameIndex), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
                 break;
                 default:
-                spriteBatch.Draw(tex, position,
+                    spriteBatch.Draw(tex, position,
                     framesDown.ElementAt(frameIndex), Color.White);
                 break;
             }

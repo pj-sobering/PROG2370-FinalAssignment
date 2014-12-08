@@ -20,7 +20,7 @@ namespace finalProject
     /// <summary>
     /// Loads all content and makes it accessable throughout the project.
     /// </summary>
-    static class ContentManager
+    public static class ContentManager
     {
         static Vector2 stage;
 
@@ -65,6 +65,14 @@ namespace finalProject
         {
             get { return ContentManager.buildingTex; }
         }
+
+        static Texture2D wallTex;
+
+        public static Texture2D WallTex
+        {
+            get { return ContentManager.wallTex; }
+        }
+
         static SoundEffect bombDrop;
 
         public static SoundEffect BombDrop
@@ -91,13 +99,16 @@ namespace finalProject
             get { return ContentManager.playerDie; }
         }
 
+        public enum BlockType { Wall, Destructable }
+
         static public void LoadAll(Game1 game)
         {
-            stage = new Vector2(game.GraphicsDevice.PresentationParameters.BackBufferWidth, game.GraphicsDevice.PresentationParameters.BackBufferHeight);
+            stage = new Vector2(game.Graphics.PreferredBackBufferWidth, game.Graphics.PreferredBackBufferHeight);
             player1Tex = game.Content.Load<Texture2D>("images/player1");
             player2Tex = game.Content.Load<Texture2D>("images/player2");
             bombTex = game.Content.Load<Texture2D>("images/bomb");
             explosionTex = game.Content.Load<Texture2D>("images/explosion");
+            wallTex = game.Content.Load<Texture2D>("images/box");
         }
     }
 }

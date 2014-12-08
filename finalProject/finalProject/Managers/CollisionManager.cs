@@ -22,17 +22,19 @@ namespace finalProject
     /// </summary>
     public class CollisionManager : Microsoft.Xna.Framework.GameComponent
     {
-        private Player p1;
-        private Player p2;
-        private Wall wall;
+        const int SPRITE_X_OFFSET = 10;
+        const int SPRITE_Y_OFFSET = 5;
+        private Player[] players;
+        public GridCell[,] grid;
+        private Game1 game;
 
-        public CollisionManager(Game game, Player p1, Player p2, Wall wall)
+        public CollisionManager(Game1 game, Player[] players, GridCell[,] grid)
             : base(game)
         {
             // TODO: Construct any child components here
-            this.p1 = p1;
-            this.p2 = p2;
-            this.wall = wall;
+            this.players = players;
+            this.grid = grid;
+            this.game = game;
         }
 
         /// <summary>
@@ -53,9 +55,42 @@ namespace finalProject
         public override void Update(GameTime gameTime)
         {
             // TODO: Add your update code here
-            Rectangle p1Rect = p1.getBound();
-            Rectangle p2Rect = p2.getBound();
-            Rectangle wallRect = wall.getBound();
+            foreach (Player p in players)
+            {
+                Rectangle pRec = p.getBound();
+                pRec.X += SPRITE_X_OFFSET;
+                pRec.Width -= SPRITE_X_OFFSET;
+                pRec.Y += SPRITE_Y_OFFSET;
+                pRec.Height -= SPRITE_Y_OFFSET;
+                foreach (GridCell gc in grid)
+                {
+                    if (gc != null)
+                    {
+                        if (gc.BlockType == ContentManager.BlockType.Wall || gc.BlockType == ContentManager.BlockType.Destructable)
+                        {
+                            if (pRec.Intersects(gc.Destination))
+                            {
+
+                                switch (p.direction)
+                                {
+                                    case Player.Direction.Up:
+                                        p.Position = new Vector2(p.Position.X, p.Position.Y + p.Speed.Y);
+                                        break;
+                                    case Player.Direction.Down:
+                                        p.Position = new Vector2(p.Position.X, p.Position.Y - p.Speed.Y);
+                                        break;
+                                    case Player.Direction.Left:
+                                        p.Position = new Vector2(p.Position.X + p.Speed.X, p.Position.Y);
+                                        break;
+                                    case Player.Direction.Right:
+                                        p.Position = new Vector2(p.Position.X - p.Speed.X, p.Position.Y);
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             
             base.Update(gameTime);
         }
