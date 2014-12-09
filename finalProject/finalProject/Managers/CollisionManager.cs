@@ -26,7 +26,6 @@ namespace finalProject
         const int SPRITE_Y_OFFSET = 5;
         const int GRID_HEIGHT = 13;
         const int GRID_WIDTH = 17;
-        float width, height;
         private Player[] players;
         public GridCell[,] grid;
         private Game1 game;
@@ -103,6 +102,20 @@ namespace finalProject
             base.Update(gameTime);
         }
 
+        public void ExplosionCollision(List<Explosion> explosions, Player[]Players)
+        {
+            foreach (Player p in Players)
+            {
+                Rectangle pRec = p.getBounds();
+                foreach (Explosion exp in explosions)
+                {
+                    if (pRec.Intersects(exp.Destination))
+                    {
+                        p.PlayerState = Player.State.Dead; // :(
+                    }
+                }
+            }
+        }
         /// <summary>
         /// Returns a rectangle that represents a grid space, used to snap objects to grid.
         /// </summary>
@@ -126,19 +139,5 @@ namespace finalProject
             int y = (int)Math.Floor(space.Y / (ContentManager.Stage.Y / GRID_HEIGHT));
             return new Vector2(x, y);
         }
-
-        //public static void ExplosionCollision(Explosion[] explosions)
-        //{
-        //    foreach (Player p in players)
-        //    {
-        //        foreach (Explosion e in explosions)
-        //        {
-        //            if (p.getBounds().Intersects(e.Destination))
-        //            {
-        //                p.PlayerState = Player.State.Dead; // :(
-        //            }
-        //        }
-        //    }
-        //}
     }
 }

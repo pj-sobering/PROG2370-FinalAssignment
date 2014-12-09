@@ -24,6 +24,7 @@ namespace finalProject
         private Vector2 stage;
         public Player[] players;
         public GridCell[,] grid; // 13 x 17
+        public CollisionManager cm;
         float width, height;
 
 
@@ -51,7 +52,7 @@ namespace finalProject
             players[1] = p2;
             p2.DrawOrder = 2;
             this.Components.Add(p2);
-            CollisionManager cm = new CollisionManager(game, players, grid);
+            cm = new CollisionManager(game, players, grid);
             this.Components.Add(cm);
             
         }
@@ -71,7 +72,7 @@ namespace finalProject
                     // Set up the walls along the border
                     if (i == 0 || i == GRID_HEIGHT - 1 || j == 0 || j == GRID_WIDTH - 1)
                     {
-                        Wall wall = new Wall(Game, spriteBatch, r, false);
+                        Wall wall = new Wall(Game, spriteBatch, r, false, true);
                         GridCell gc = new GridCell(r, GridCell.CellType.Wall, new Vector2(i,j), wall);
                         grid[i, j] = gc;
                         this.Components.Add(wall);
@@ -118,12 +119,14 @@ namespace finalProject
                    grid[i, j] = new GridCell(r, GridCell.CellType.Destructable, new Vector2(i,j), destructable);
                    this.Components.Add(destructable);
                    destructableCounter++;
+               
                    Console.WriteLine("Looping through grid" + destructableCounter.ToString());
                 }
 
             }
 
         }
+
 
         /// <summary>
         /// Allows the game component to perform any initialization it needs to before starting

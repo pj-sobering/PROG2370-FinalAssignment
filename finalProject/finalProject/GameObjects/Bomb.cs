@@ -105,12 +105,15 @@ namespace finalProject
             }
             if (frameIndex == SPRITE_FRAMES && multiSound == true)
             {
-                Explosion center = new Explosion(game, spriteBatch, destination, Explosion.Direction.Center);
-                game.Components.Add(center);
+                Explosion centre = new Explosion(game, spriteBatch, destination, Explosion.Direction.Center);
+                game.Components.Add(centre);
                 GridCell up = grid[(int)coords.X - 1, (int)coords.Y];
                 GridCell down = grid[(int)coords.X +1, (int)coords.Y];
                 GridCell left = grid[(int)coords.X, (int)coords.Y -1];
                 GridCell right = grid[(int)coords.X, (int)coords.Y +1];
+
+                List<Explosion> explosions = new List<Explosion>();
+                explosions.Add(centre);
                 if (up.Type != GridCell.CellType.Wall)
                 {
                     Explosion exp = new Explosion(game,spriteBatch, up.Destination, Explosion.Direction.Up);
@@ -121,7 +124,9 @@ namespace finalProject
                         up.Wall = null;
                         up.Type = GridCell.CellType.Empty;
                         player.Score++;
+                        
                     }
+                    explosions.Add(exp);
                     game.Components.Add(exp);
                 }
                 if (down.Type != GridCell.CellType.Wall)
@@ -134,7 +139,9 @@ namespace finalProject
                         down.Wall = null;
                         down.Type = GridCell.CellType.Empty;
                         player.Score++;
+                        
                     }
+                    explosions.Add(exp);
                     game.Components.Add(exp);
                 }
                 if (left.Type != GridCell.CellType.Wall)
@@ -148,7 +155,9 @@ namespace finalProject
                         left.Wall = null;
                         left.Type = GridCell.CellType.Empty;
                         player.Score++;
+                        
                     }
+                    explosions.Add(exp);
                     game.Components.Add(exp);
                 }
                 if (right.Type != GridCell.CellType.Wall)
@@ -161,9 +170,13 @@ namespace finalProject
                         right.Wall = null;
                         right.Type = GridCell.CellType.Empty;
                         player.Score++;
+                        
                     }
+                    explosions.Add(exp);
                     game.Components.Add(exp);
                 }
+
+                game.actionScene.cm.ExplosionCollision(explosions, game.actionScene.players);
                 this.Enabled = false;
                 multiSound = false;
                 hit.Play();

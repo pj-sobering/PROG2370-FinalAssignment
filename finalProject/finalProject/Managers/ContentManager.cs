@@ -73,6 +73,14 @@ namespace finalProject
             get { return ContentManager.wallTex; }
         }
 
+        private static Texture2D deathTex;
+
+        public static Texture2D DeathTex
+        {
+            get { return ContentManager.deathTex; }
+            set { ContentManager.deathTex = value; }
+        }
+  
         static SoundEffect bombDrop;
 
         public static SoundEffect BombDrop
@@ -107,6 +115,7 @@ namespace finalProject
             bombTex = game.Content.Load<Texture2D>("images/bomb");
             explosionTex = game.Content.Load<Texture2D>("images/explosion");
             wallTex = game.Content.Load<Texture2D>("images/box");
+            deathTex = game.Content.Load<Texture2D>("images/death");
         }
     }
 }

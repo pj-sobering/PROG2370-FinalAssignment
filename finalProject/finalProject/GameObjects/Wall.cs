@@ -20,6 +20,7 @@ namespace finalProject
         private SpriteBatch spriteBatch;
         private Rectangle destination;
         private bool destructible;
+        private bool edge;
 
         public bool Destructible
         {
@@ -27,13 +28,14 @@ namespace finalProject
             set { destructible = value; }
         }
 
-        public Wall(Game game, SpriteBatch spriteBatch, Rectangle destination, bool destructible)
+        public Wall(Game game, SpriteBatch spriteBatch, Rectangle destination, bool destructible, bool edge = false)
             : base(game)
         {
             // TODO: Construct any child components here
             this.spriteBatch = spriteBatch;
             this.destination = destination;
             this.destructible = destructible;
+            this.edge = edge;
         }
 
         /// <summary>
@@ -63,12 +65,20 @@ namespace finalProject
             spriteBatch.Begin();
             if (destructible == false)
             {
-                spriteBatch.Draw(ContentManager.WallTex, destination, Color.White);
+                if (edge == false)
+                {
+                    spriteBatch.Draw(ContentManager.WallTex, destination, Color.White);
+                }
+                else
+                {
+                    spriteBatch.Draw(ContentManager.WallTex, destination, Color.SlateGray);
+                }
             }
-            else
+            else 
             {
                 spriteBatch.Draw(ContentManager.WallTex, destination, Color.Brown);
             }
+
             spriteBatch.End();
             base.Draw(gameTime);
         }

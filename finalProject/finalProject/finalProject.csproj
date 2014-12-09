@@ -73,22 +73,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameObjects\GridCell.cs" />
-    <Compile Include="Menus\ActionScene.cs" />
+    <Compile Include="Scenes\ActionScene.cs" />
     <Compile Include="GameObjects\Bomb.cs" />
     <Compile Include="Managers\CollisionManager.cs" />
     <Compile Include="Managers\ContentManager.cs" />
     <Compile Include="GameObjects\Explosion.cs" />
-    <Compile Include="Menus\GameScene.cs" />
-    <Compile Include="Menus\HelpScene.cs" />
+    <Compile Include="Scenes\GameScene.cs" />
+    <Compile Include="Scenes\HelpScene.cs" />
     <Compile Include="Managers\KeyBindings.cs" />
-    <Compile Include="Menus\MenuComponent.cs" />
+    <Compile Include="Scenes\MenuComponent.cs" />
     <Compile Include="GameObjects\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
-    <Compile Include="Menus\StartScene.cs" />
+    <Compile Include="Scenes\StartScene.cs" />
     <Compile Include="GameObjects\Wall.cs" />
-    <Compile Include="Menus\Scene.cs" />
+    <Compile Include="Scenes\Scene.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

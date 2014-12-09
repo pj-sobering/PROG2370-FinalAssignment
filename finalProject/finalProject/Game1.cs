@@ -162,7 +162,6 @@ namespace finalProject
                 {
                     this.Exit();
                 }
-
             }
             if (helpScene.Enabled || actionScene.Enabled || howtoPlay.Enabled || about.Enabled)
             {

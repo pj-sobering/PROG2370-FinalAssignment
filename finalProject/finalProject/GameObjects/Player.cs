@@ -22,27 +22,28 @@ namespace finalProject
     /// </summary>
     public class Player : Microsoft.Xna.Framework.DrawableGameComponent
     {
-
+        const int SPRITE_PADDING = 20; // the space between images in the sprite file - this is removed from the sprite width to improve collision detection
+        const int SPRITE_FRAME_LIMIT = 4; // number of frames per movement in the sprite file - Does not have to be constant, but in this case we only work with 4 frames per movement.
+        const int DELAY = 10; // The number of frames to wait before progressing to the next frame of an animation (60 fps)
+        const int BOMBS_PER_PLAYER = 1; // The number of bombs a player is allowed to drop at a time.
         const int SPRITE_WIDTH = 42; // width of a single image in the sprite file
+        const int SPRITE_HEIGHT = 30; // height of a single image in the sprite file
+        const int DEAD_TIME = 140; // the number of frames to wait before the death animation ends (60 fps).
+        public enum State { Up, Down, Left, Right, Dead };
 
         public int Width
         {
             get { return SPRITE_WIDTH; }
         } 
-
-        const int SPRITE_HEIGHT = 30; // height of a single image in the sprite file
-
         public int Height
         {
             get { return SPRITE_HEIGHT; }
-        } 
-
-        const int SPRITE_PADDING = 20; // the space between images in the sprite file - this is removed from the sprite width to improve collision detection
-        const int SPRITE_FRAME_LIMIT = 4; // number of frames per movement in the sprite file - Does not have to be constant, but in this case we only work with 4 frames per movement.
-        const int DELAY = 10; // The number of frames per second to wait before progressing to the next frame of an animation
-        const int BOMBS_PER_PLAYER = 1; // The number of bombs a player is allowed to drop at a time.
+        }
 
         private SpriteBatch spriteBatch;
+        private State startState;
+        private Vector2 startPosition; 
+
         private Vector2 position;
         public Vector2 Position
         {
@@ -66,8 +67,9 @@ namespace finalProject
         private KeyBindings bindings;
         int delayCounter = 0;
         int frameIndex = 0;
-        public enum State { Up, Down, Left, Right, Dead };
-        private State playerState = State.Down;
+
+        private State playerState;
+
 
         public State PlayerState
         {
@@ -75,7 +77,7 @@ namespace finalProject
             set { playerState = value; }
         }
         private Bomb[] bombArray = new Bomb[BOMBS_PER_PLAYER];
-        private int score;
+        private static int score;
 
         public int Score
         {
@@ -83,6 +85,9 @@ namespace finalProject
             set { score = value; }
         }
         private SoundEffect hit;
+
+
+        private int deadCounter = 0;
 
         /// <summary>
         /// Constructs a Player object
@@ -95,7 +100,7 @@ namespace finalProject
         /// <param name="stage"></param>
         /// <param name="keyBindings"></param>
         public Player(Game1 game, SpriteBatch spriteBatch, Texture2D tex, Vector2 position, Vector2 speed,
-            KeyBindings keyBindings, State direction)
+            KeyBindings keyBindings, State state)
             : base(game)
         {
             // TODO: Construct any child components here
@@ -107,7 +112,9 @@ namespace finalProject
             this.bindings = keyBindings;
             this.DrawOrder = 2;
             this.game = game;
-            this.playerState = direction;
+            this.playerState = state;
+            this.startPosition = position;
+            this.startState = state;
             this.hit = hit;
             AnimationFrames();
         }
@@ -183,94 +190,118 @@ namespace finalProject
         {
             // TODO: Add your update code here
 
-            KeyboardState ks = Keyboard.GetState(); 
-            if (ks.IsKeyDown(bindings.Up) && !ks.IsKeyDown(bindings.Right) 
-                && !ks.IsKeyDown(bindings.Left) && ! ks.IsKeyDown(bindings.Down))
+            KeyboardState ks = Keyboard.GetState();
+            if (playerState != State.Dead)
             {
-                
-                position.Y -= speed.Y;
-                playerState = State.Up;
-                if (position.Y < 0)
+                if (ks.IsKeyDown(bindings.Up) && !ks.IsKeyDown(bindings.Right)
+                    && !ks.IsKeyDown(bindings.Left) && !ks.IsKeyDown(bindings.Down))
                 {
-                    position.Y = 0;
-                }
-                delayCounter++;
-            }
-            if (ks.IsKeyDown(bindings.Down) && !ks.IsKeyDown(bindings.Right) 
-                && !ks.IsKeyDown(bindings.Left) && !ks.IsKeyDown(bindings.Right))
-            {
-                playerState = State.Down;
-                position.Y += speed.Y;
-                if (position.Y > ContentManager.Stage.Y - SPRITE_HEIGHT)
-                {
-                    position.Y = ContentManager.Stage.Y - SPRITE_HEIGHT;
-                }
-                delayCounter++;
-            }
-            if (ks.IsKeyDown(bindings.Left) && !ks.IsKeyDown(bindings.Right)
-                && !ks.IsKeyDown(bindings.Up) && !ks.IsKeyDown(bindings.Down))
-            {
-                playerState = State.Left;
-                position.X -= speed.X;
-                if (position.X < 0)
-                {
-                    position.X = 0;
 
-                }
-                delayCounter++;
-            }
-            if (ks.IsKeyDown(bindings.Right) && !ks.IsKeyDown(bindings.Up) 
-                && !ks.IsKeyDown(bindings.Left) && !ks.IsKeyDown(bindings.Down))
-            {
-                playerState = State.Right;
-                position.X += speed.X;
-                if (position.X > ContentManager.Stage.X - SPRITE_WIDTH)
-                {
-                    position.X = ContentManager.Stage.X - SPRITE_WIDTH;
-                }
-                delayCounter++;
-            }
-
-            if (delayCounter > DELAY)
-            {
-                frameIndex++;
-                delayCounter = 0;
-            }
-            if (frameIndex > 3)
-            {
-                frameIndex = 1;
-            }
-
-            if (ks.IsKeyUp(bindings.Up) && ks.IsKeyUp(bindings.Down) 
-                && ks.IsKeyUp(bindings.Left) && ks.IsKeyUp(bindings.Right))
-            {
-                frameIndex = 0;
-            }
-
-            if (ks.IsKeyDown(bindings.Bomb))
-            {
-                for (int i = 0; i < bombArray.Length; i++)
-                {
-                    if (bombArray[i] == null || bombArray[i].Enabled == false)
+                    position.Y -= speed.Y;
+                    playerState = State.Up;
+                    if (position.Y < 0)
                     {
-                        // Gets the players bounds and focuses the coordinates on a small point in the center 
-                        // This gives the collision manager greater accuracy in determining a destination for the bomb
-                        Rectangle playerSpace = getBounds();
-                        playerSpace.X += SPRITE_WIDTH / 2;
-                        playerSpace.Y += SPRITE_HEIGHT / 2;
-                        playerSpace.Height = 1;
-                        playerSpace.Width = 1;
-                        GridCell gridCell = CollisionManager.EmptySpace(playerSpace, game.actionScene.grid);
-                        bombArray[i] = new Bomb(game, spriteBatch, gridCell.Destination, game.actionScene.grid, gridCell.Coords, this,  hit);
-                        game.Components.Add(bombArray[i]);
-                        bombArray[i].DrawOrder = 0;
-                        break;
+                        position.Y = 0;
                     }
+                    delayCounter++;
+                }
+                if (ks.IsKeyDown(bindings.Down) && !ks.IsKeyDown(bindings.Right)
+                    && !ks.IsKeyDown(bindings.Left) && !ks.IsKeyDown(bindings.Right))
+                {
+                    playerState = State.Down;
+                    position.Y += speed.Y;
+                    if (position.Y > ContentManager.Stage.Y - SPRITE_HEIGHT)
+                    {
+                        position.Y = ContentManager.Stage.Y - SPRITE_HEIGHT;
+                    }
+                    delayCounter++;
+                }
+                if (ks.IsKeyDown(bindings.Left) && !ks.IsKeyDown(bindings.Right)
+                    && !ks.IsKeyDown(bindings.Up) && !ks.IsKeyDown(bindings.Down))
+                {
+                    playerState = State.Left;
+                    position.X -= speed.X;
+                    if (position.X < 0)
+                    {
+                        position.X = 0;
+
+                    }
+                    delayCounter++;
+                }
+                if (ks.IsKeyDown(bindings.Right) && !ks.IsKeyDown(bindings.Up)
+                    && !ks.IsKeyDown(bindings.Left) && !ks.IsKeyDown(bindings.Down))
+                {
+                    playerState = State.Right;
+                    position.X += speed.X;
+                    if (position.X > ContentManager.Stage.X - SPRITE_WIDTH)
+                    {
+                        position.X = ContentManager.Stage.X - SPRITE_WIDTH;
+                    }
+                    delayCounter++;
                 }
 
+                if (delayCounter > DELAY)
+                {
+                    frameIndex++;
+                    delayCounter = 0;
+                }
+                if (frameIndex > 3)
+                {
+                    frameIndex = 1;
+                }
+
+                if (ks.IsKeyUp(bindings.Up) && ks.IsKeyUp(bindings.Down)
+                    && ks.IsKeyUp(bindings.Left) && ks.IsKeyUp(bindings.Right))
+                {
+                    frameIndex = 0;
+                }
+
+
+                if (ks.IsKeyDown(bindings.Bomb))
+                {
+                    for (int i = 0; i < bombArray.Length; i++)
+                    {
+                        if (bombArray[i] == null || bombArray[i].Enabled == false)
+                        {
+                            // Gets the players bounds and focuses the coordinates on a small point in the center 
+                            // This gives the collision manager greater accuracy in determining a destination for the bomb
+                            Rectangle playerSpace = getBounds();
+                            playerSpace.X += SPRITE_WIDTH / 2;
+                            playerSpace.Y += SPRITE_HEIGHT / 2;
+                            playerSpace.Height = 1;
+                            playerSpace.Width = 1;
+                            GridCell gridCell = CollisionManager.EmptySpace(playerSpace, game.actionScene.grid);
+                            bombArray[i] = new Bomb(game, spriteBatch, gridCell.Destination, game.actionScene.grid, gridCell.Coords, this, hit);
+                            game.Components.Add(bombArray[i]);
+                            bombArray[i].DrawOrder = 0;
+                            break;
+                        }
+                    }
+
+                }
+            }
+            else
+            {
+                // Death animation
+                if (deadCounter <= DEAD_TIME)
+                {
+                    position.Y -= 0.3f;
+                    deadCounter++;
+                }
+                else
+                {
+                    deadCounter = 0;
+                    RevivePlayer();
+                }
             }
 
             base.Update(gameTime);
+        }
+
+        public void RevivePlayer()
+        {
+            this.Position = startPosition;
+            this.PlayerState = startState;
         }
 
         public override void Draw(GameTime gameTime)
@@ -290,6 +321,9 @@ namespace finalProject
                 break;
                 case State.Down:
                     spriteBatch.Draw(tex, position, framesDown.ElementAt(frameIndex), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
+                break;
+                case State.Dead:
+                    spriteBatch.Draw(ContentManager.DeathTex, position, Color.White);
                 break;
                 default:
                     spriteBatch.Draw(tex, position,
