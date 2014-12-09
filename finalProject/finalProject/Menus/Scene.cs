@@ -15,7 +15,7 @@ namespace finalProject
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class HowToPlayScene : GameScene
+    public class Scene : GameScene
     {
         private SpriteBatch spriteBatch;
         protected Color color;
@@ -23,7 +23,7 @@ namespace finalProject
         protected string message;
         protected Vector2 position;
 
-        public HowToPlayScene(Game game, SpriteBatch spriteBatch, SpriteFont font, Vector2 position,
+        public Scene(Game game, SpriteBatch spriteBatch, SpriteFont font, Vector2 position,
                          string message, Color color)
             : base(game)
         {

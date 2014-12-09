@@ -2,3 +2,8 @@ Resource List:
 
 Bomb.png = https://cdn1.iconfinder.com/data/icons/nuvola2/128x128/apps/clanbomber.png
 Explosion.png = http://www.gamefabrique.com/games/super-bomberman-3/
+Player1.png, Player2.png = http://galleryhip.com/bomberman-sprite.html
+Monster.png = http://spritedatabase.net/file/15556
+Battle.mp3 = http://downloads.khinsider.com/game-soundtracks/album/bomberman-the-music/78-battle-start-battle.mp3
+Explode.wav = http://soundbible.com/1234-Bomb.html (or http://soundbible.com/suggest.php?q=explosion&x=0&y=0)on&x=0&y=0)
+Bomberman.ico = http://www.iconarchive.com/show/game-stars-icons-by-yellowicon/Bomberman-icon.html

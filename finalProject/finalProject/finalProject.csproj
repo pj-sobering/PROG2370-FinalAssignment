@@ -73,7 +73,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameObjects\GridCell.cs" />
-    <Compile Include="HowToPlayScene.cs" />
     <Compile Include="Menus\ActionScene.cs" />
     <Compile Include="GameObjects\Bomb.cs" />
     <Compile Include="Managers\CollisionManager.cs" />
@@ -89,6 +88,7 @@
     <Compile Include="Game1.cs" />
     <Compile Include="Menus\StartScene.cs" />
     <Compile Include="GameObjects\Wall.cs" />
+    <Compile Include="Menus\Scene.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

@@ -69,7 +69,7 @@ namespace finalProject
         public enum Direction { Up, Down, Left, Right };
         public Direction direction = Direction.Down;
         private Bomb[] bombArray = new Bomb[BOMBS_PER_PLAYER];
-        
+        private SoundEffect hit;
 
         /// <summary>
         /// Constructs a Player object
@@ -95,6 +95,7 @@ namespace finalProject
             this.DrawOrder = 2;
             this.game = game;
             this.direction = direction;
+            this.hit = hit;
             AnimationFrames();
         }
 
@@ -247,7 +248,7 @@ namespace finalProject
                         playerSpace.Height = 1;
                         playerSpace.Width = 1;
                         GridCell gridCell = CollisionManager.EmptySpace(playerSpace, game.actionScene.grid);
-                        bombArray[i] = new Bomb(game, spriteBatch, gridCell.Destination, game.actionScene.grid, gridCell.Coords);
+                        bombArray[i] = new Bomb(game, spriteBatch, gridCell.Destination, game.actionScene.grid, gridCell.Coords, hit);
                         game.Components.Add(bombArray[i]);
                         bombArray[i].DrawOrder = 0;
                         Console.WriteLine("i= " + gridCell.Coords.X.ToString() + " j= " + gridCell.Coords.Y.ToString());

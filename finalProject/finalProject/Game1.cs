@@ -30,9 +30,10 @@ namespace finalProject
         SpriteBatch spriteBatch;
 
         private StartScene startScene;
-        private HelpScene helpScene;
+        private Scene helpScene;
+        private Scene howtoPlay;
+        private Scene about;
         public ActionScene actionScene;
-        private HowToPlayScene howtoPlay;
 
         public Game1()
         {
@@ -81,28 +82,36 @@ namespace finalProject
             Components.Add(startScene);
 
             SpriteFont font = Content.Load<SpriteFont>("fonts/regularFont");
-            Vector2 pos = new Vector2(100, 100);
-            string message = "The general goal throughout the series is to complete the levels by strategically placing bombs" +
-                             "\nin order to kill enemies and destroy obstacles. Exploding bombs can set off other bombs, " +
-                             "\nkill or injure enemies, and destroy obstacles. However, they can also kill or injure the player character," +
-                             "\ndestroy powerups, and sometimes 'anger' the exit, causing it to generate more enemies. " +
-                             "\nMost Bomberman games also feature a multiplayer mode, where other Bombermen act as opponents, and the last " +
-                             "\none standing is the winner.";
-            helpScene = new HelpScene(this, spriteBatch, font, pos, message, Color.Gold);
+            Vector2 pos = new Vector2(50, 50);
+            string message = "The general goal throughout the series is to complete the levels by" +
+                             "\nstrategically placing bombs in order to kill enemies and destroy obstacles." +
+                             "\nExploding bombs can set off other bombs, kill or injure enemies," +
+                             "\nand destroy obstacles. However, they can also kill or injure the player " +
+                             "\ncharacter, destroy powerups, and sometimes 'anger' the exit, causing it" +
+                             "\nto generate more enemies. Most Bomberman games also feature a multiplayer" +
+                             "\nmode where other Bombermen act as opponents, and the last none standing" +
+                             "\nis the winner.";
+            helpScene = new Scene(this, spriteBatch, font, pos, message, Color.Indigo);
             Components.Add(helpScene);
 
-            SpriteFont font1 = Content.Load<SpriteFont>("fonts/regularFont");
-            Vector2 pos1 = new Vector2(100, 100);
-            string message1 = "Move Up: W      Key Up\n" + "\nMove Down: S      Key Down\n" + "\nMove Left: A      Key Left\n" +
-                              "\nMove Right: D      Key Right\n" + "\nBomb: Space key      Pad Number 0";
-            howtoPlay = new HowToPlayScene(this, spriteBatch, font, pos1, message1, Color.Gold);
+            string message1 = "Move Up: W   /   Key Up\n" + "\nMove Down: S   /   Key Down\n" + "\nMove Left: A   /   Key Left\n" +
+                              "\nMove Right: D   /   Key Right\n" + "\nBomb: Space key   /   Pad Number 0";
+            howtoPlay = new Scene(this, spriteBatch, font, pos, message1, Color.Indigo);
             Components.Add(howtoPlay);
+
+            string message2 = "Bomberman\n\nPaul Sobering\nKim Thai";
+            about = new Scene(this, spriteBatch, font, pos, message2, Color.Indigo);
+            Components.Add(about);
 
             actionScene = new ActionScene(this, spriteBatch);
             actionScene.Enabled = false;
             Components.Add(actionScene);
 
             startScene.show();
+
+            Song song = Content.Load<Song>("sounds/battle");
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Play(song);
         }
 
         /// <summary>
@@ -144,13 +153,18 @@ namespace finalProject
                     hideAllScenes();
                     howtoPlay.show();
                 }
+                if (selectedIndex == 3 && ks.IsKeyDown(Keys.Enter))
+                {
+                    hideAllScenes();
+                    about.show();
+                }
                 if (selectedIndex == 4 && ks.IsKeyDown(Keys.Enter))
                 {
                     this.Exit();
                 }
 
             }
-            if (helpScene.Enabled || actionScene.Enabled || howtoPlay.Enabled)
+            if (helpScene.Enabled || actionScene.Enabled || howtoPlay.Enabled || about.Enabled)
             {
                 if (ks.IsKeyDown(Keys.Escape))
                 {

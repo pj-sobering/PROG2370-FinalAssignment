@@ -36,8 +36,16 @@ namespace finalProject
         int timer = 0;
         int frameIndex = 0;
         Game1 game;
+        private SoundEffect hit;
+        private bool multiSound = true;
+        public bool MultiSound
+        {
+            get { return multiSound; }
+            set { multiSound = value; }
+        }
         
-        public Bomb(Game1 game, SpriteBatch spriteBatch, Rectangle destination, GridCell[,] grid, Vector2 coords)
+        public Bomb(Game1 game, SpriteBatch spriteBatch, Rectangle destination, GridCell[,] grid, Vector2 coords,
+                    SoundEffect hit)
             : base(game)
         {
             // TODO: Construct any child components here
@@ -49,6 +57,7 @@ namespace finalProject
             this.coords = coords;
             this.game = game;
             this.grid = grid;
+            this.hit = game.Content.Load<SoundEffect>("sounds/explode");
         }
 
         /// <summary>
@@ -92,7 +101,7 @@ namespace finalProject
                 }
                 timer = 0;
             }
-            if (frameIndex == SPRITE_FRAMES)
+            if (frameIndex == SPRITE_FRAMES && multiSound == true)
             {
                 Explosion center = new Explosion(game, spriteBatch, destination, Explosion.Direction.Center);
                 game.Components.Add(center);
@@ -121,6 +130,8 @@ namespace finalProject
                     game.Components.Add(exp);
                 }
                 this.Enabled = false;
+                multiSound = false;
+                hit.Play();
             }
             base.Update(gameTime);
         }
