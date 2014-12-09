@@ -66,9 +66,22 @@ namespace finalProject
         private KeyBindings bindings;
         int delayCounter = 0;
         int frameIndex = 0;
-        public enum Direction { Up, Down, Left, Right };
-        public Direction direction = Direction.Down;
+        public enum State { Up, Down, Left, Right, Dead };
+        private State playerState = State.Down;
+
+        public State PlayerState
+        {
+            get { return playerState; }
+            set { playerState = value; }
+        }
         private Bomb[] bombArray = new Bomb[BOMBS_PER_PLAYER];
+        private int score;
+
+        public int Score
+        {
+            get { return score; }
+            set { score = value; }
+        }
         private SoundEffect hit;
 
         /// <summary>
@@ -82,7 +95,7 @@ namespace finalProject
         /// <param name="stage"></param>
         /// <param name="keyBindings"></param>
         public Player(Game1 game, SpriteBatch spriteBatch, Texture2D tex, Vector2 position, Vector2 speed,
-            KeyBindings keyBindings, Direction direction)
+            KeyBindings keyBindings, State direction)
             : base(game)
         {
             // TODO: Construct any child components here
@@ -94,7 +107,7 @@ namespace finalProject
             this.bindings = keyBindings;
             this.DrawOrder = 2;
             this.game = game;
-            this.direction = direction;
+            this.playerState = direction;
             this.hit = hit;
             AnimationFrames();
         }
@@ -176,7 +189,7 @@ namespace finalProject
             {
                 
                 position.Y -= speed.Y;
-                direction = Direction.Up;
+                playerState = State.Up;
                 if (position.Y < 0)
                 {
                     position.Y = 0;
@@ -186,7 +199,7 @@ namespace finalProject
             if (ks.IsKeyDown(bindings.Down) && !ks.IsKeyDown(bindings.Right) 
                 && !ks.IsKeyDown(bindings.Left) && !ks.IsKeyDown(bindings.Right))
             {
-                direction = Direction.Down;
+                playerState = State.Down;
                 position.Y += speed.Y;
                 if (position.Y > ContentManager.Stage.Y - SPRITE_HEIGHT)
                 {
@@ -197,7 +210,7 @@ namespace finalProject
             if (ks.IsKeyDown(bindings.Left) && !ks.IsKeyDown(bindings.Right)
                 && !ks.IsKeyDown(bindings.Up) && !ks.IsKeyDown(bindings.Down))
             {
-                direction = Direction.Left;
+                playerState = State.Left;
                 position.X -= speed.X;
                 if (position.X < 0)
                 {
@@ -209,7 +222,7 @@ namespace finalProject
             if (ks.IsKeyDown(bindings.Right) && !ks.IsKeyDown(bindings.Up) 
                 && !ks.IsKeyDown(bindings.Left) && !ks.IsKeyDown(bindings.Down))
             {
-                direction = Direction.Right;
+                playerState = State.Right;
                 position.X += speed.X;
                 if (position.X > ContentManager.Stage.X - SPRITE_WIDTH)
                 {
@@ -248,10 +261,9 @@ namespace finalProject
                         playerSpace.Height = 1;
                         playerSpace.Width = 1;
                         GridCell gridCell = CollisionManager.EmptySpace(playerSpace, game.actionScene.grid);
-                        bombArray[i] = new Bomb(game, spriteBatch, gridCell.Destination, game.actionScene.grid, gridCell.Coords, hit);
+                        bombArray[i] = new Bomb(game, spriteBatch, gridCell.Destination, game.actionScene.grid, gridCell.Coords, this,  hit);
                         game.Components.Add(bombArray[i]);
                         bombArray[i].DrawOrder = 0;
-                        Console.WriteLine("i= " + gridCell.Coords.X.ToString() + " j= " + gridCell.Coords.Y.ToString());
                         break;
                     }
                 }
@@ -264,19 +276,19 @@ namespace finalProject
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend);
-            switch(direction)
+            switch(playerState)
             {
                     
-                case Direction.Up:
+                case State.Up:
                     spriteBatch.Draw(tex, position, framesUp.ElementAt(frameIndex), Color.White, 0, new Vector2(0,0), 1f, SpriteEffects.None, 0);
                 break;
-                case Direction.Left:
+                case State.Left:
                     spriteBatch.Draw(tex, position, framesLeft.ElementAt(frameIndex), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
                 break;
-                case Direction.Right:
+                case State.Right:
                     spriteBatch.Draw(tex, position, framesRight.ElementAt(frameIndex), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
                 break;
-                case Direction.Down:
+                case State.Down:
                     spriteBatch.Draw(tex, position, framesDown.ElementAt(frameIndex), Color.White, 0, new Vector2(0, 0), 1f, SpriteEffects.None, 0);
                 break;
                 default:

@@ -36,6 +36,7 @@ namespace finalProject
         int timer = 0;
         int frameIndex = 0;
         Game1 game;
+        Player player;
         private SoundEffect hit;
         private bool multiSound = true;
         public bool MultiSound
@@ -44,7 +45,7 @@ namespace finalProject
             set { multiSound = value; }
         }
         
-        public Bomb(Game1 game, SpriteBatch spriteBatch, Rectangle destination, GridCell[,] grid, Vector2 coords,
+        public Bomb(Game1 game, SpriteBatch spriteBatch, Rectangle destination, GridCell[,] grid, Vector2 coords, Player player, 
                     SoundEffect hit)
             : base(game)
         {
@@ -57,6 +58,7 @@ namespace finalProject
             this.coords = coords;
             this.game = game;
             this.grid = grid;
+            this.player = player;
             this.hit = game.Content.Load<SoundEffect>("sounds/explode");
         }
 
@@ -112,21 +114,54 @@ namespace finalProject
                 if (up.Type != GridCell.CellType.Wall)
                 {
                     Explosion exp = new Explosion(game,spriteBatch, up.Destination, Explosion.Direction.Up);
+                    if (up.Wall != null && up.Wall.Destructible == true)
+                    {
+                        up.Wall.Visible = false;
+                        up.Wall.Enabled = false;
+                        up.Wall = null;
+                        up.Type = GridCell.CellType.Empty;
+                        player.Score++;
+                    }
                     game.Components.Add(exp);
                 }
                 if (down.Type != GridCell.CellType.Wall)
                 {
                     Explosion exp = new Explosion(game,spriteBatch, down.Destination, Explosion.Direction.Down);
+                    if (down.Wall != null && down.Wall.Destructible == true)
+                    {
+                        down.Wall.Visible = false;
+                        down.Wall.Visible = false;
+                        down.Wall = null;
+                        down.Type = GridCell.CellType.Empty;
+                        player.Score++;
+                    }
                     game.Components.Add(exp);
                 }
                 if (left.Type != GridCell.CellType.Wall)
                 {
+
                     Explosion exp = new Explosion(game, spriteBatch, left.Destination, Explosion.Direction.Left);
+                    if (left.Wall != null && left.Wall.Destructible == true)
+                    {
+                        left.Wall.Visible = false;
+                        left.Wall.Visible = false;
+                        left.Wall = null;
+                        left.Type = GridCell.CellType.Empty;
+                        player.Score++;
+                    }
                     game.Components.Add(exp);
                 }
                 if (right.Type != GridCell.CellType.Wall)
                 {
                     Explosion exp = new Explosion(game, spriteBatch, right.Destination, Explosion.Direction.Right);
+                    if (right.Wall != null && right.Wall.Destructible == true)
+                    {
+                        right.Wall.Visible = false;
+                        right.Wall.Visible = false;
+                        right.Wall = null;
+                        right.Type = GridCell.CellType.Empty;
+                        player.Score++;
+                    }
                     game.Components.Add(exp);
                 }
                 this.Enabled = false;

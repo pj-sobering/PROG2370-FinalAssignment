@@ -21,6 +21,12 @@ namespace finalProject
         private Rectangle destination;
         private bool destructible;
 
+        public bool Destructible
+        {
+            get { return destructible; }
+            set { destructible = value; }
+        }
+
         public Wall(Game game, SpriteBatch spriteBatch, Rectangle destination, bool destructible)
             : base(game)
         {

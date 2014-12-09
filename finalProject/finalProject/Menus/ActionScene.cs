@@ -39,7 +39,7 @@ namespace finalProject
             players = new Player[2];
             KeyBindings p1Bindings = new KeyBindings(Keys.W, Keys.S, Keys.A, Keys.D, Keys.Space);
             Vector2 p1Pos = new Vector2(width +1, height +1);
-            Player p1 = new Player(game, spriteBatch, ContentManager.Player1Tex, p1Pos, pSpeed, p1Bindings, Player.Direction.Right);
+            Player p1 = new Player(game, spriteBatch, ContentManager.Player1Tex, p1Pos, pSpeed, p1Bindings, Player.State.Right);
             p1.DrawOrder = 2;
             players[0] = p1;
             this.Components.Add(p1);
@@ -47,7 +47,7 @@ namespace finalProject
 
             KeyBindings p2Bindings = new KeyBindings(Keys.Up, Keys.Down, Keys.Left, Keys.Right, Keys.NumPad0);
             Vector2 p2Pos = new Vector2(width * (GRID_WIDTH -2), height * (GRID_HEIGHT -2)); // dimensions of both players are constant, using p1's values because it's already instantiated.
-            Player p2 = new Player(game, spriteBatch, ContentManager.Player2Tex, p2Pos, pSpeed, p2Bindings, Player.Direction.Left);
+            Player p2 = new Player(game, spriteBatch, ContentManager.Player2Tex, p2Pos, pSpeed, p2Bindings, Player.State.Left);
             players[1] = p2;
             p2.DrawOrder = 2;
             this.Components.Add(p2);
@@ -72,7 +72,7 @@ namespace finalProject
                     if (i == 0 || i == GRID_HEIGHT - 1 || j == 0 || j == GRID_WIDTH - 1)
                     {
                         Wall wall = new Wall(Game, spriteBatch, r, false);
-                        GridCell gc = new GridCell(r, GridCell.CellType.Wall, new Vector2(i,j));
+                        GridCell gc = new GridCell(r, GridCell.CellType.Wall, new Vector2(i,j), wall);
                         grid[i, j] = gc;
                         this.Components.Add(wall);
                     }
@@ -80,7 +80,7 @@ namespace finalProject
                     else if (i % 2 == 0 && j % 2 == 0)
                     {
                         Wall wall = new Wall(Game, spriteBatch, r, false);
-                        GridCell gc = new GridCell(r, GridCell.CellType.Wall, new Vector2(i,j));
+                        GridCell gc = new GridCell(r, GridCell.CellType.Wall, new Vector2(i,j), wall);
                         grid[i, j] = gc;
                         this.Components.Add(wall);
                     }
@@ -113,9 +113,9 @@ namespace finalProject
                        // ensures player one starting areas is always empty.
                        continue;
                    }
-                   Rectangle r = new Rectangle((int)Math.Ceiling(width * j), (int)Math.Ceiling(height * i), (int)width, (int)height +1);
+                   Rectangle r = new Rectangle((int)Math.Ceiling(width * j), (int)Math.Ceiling(height * i), (int)width +1, (int)height +1);
                    Wall destructable = new Wall(Game, spriteBatch, r, true);
-                   grid[i, j] = new GridCell(r, GridCell.CellType.Destructable, new Vector2(i,j));
+                   grid[i, j] = new GridCell(r, GridCell.CellType.Destructable, new Vector2(i,j), destructable);
                    this.Components.Add(destructable);
                    destructableCounter++;
                    Console.WriteLine("Looping through grid" + destructableCounter.ToString());
@@ -143,7 +143,6 @@ namespace finalProject
         public override void Update(GameTime gameTime)
         {
             // TODO: Add your update code here
-
             base.Update(gameTime);
         }
     }

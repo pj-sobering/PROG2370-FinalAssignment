@@ -19,10 +19,16 @@ namespace finalProject
     {
         private SpriteBatch spriteBatch;
         private Rectangle destination;
+
+        public Rectangle Destination
+        {
+            get { return destination; }
+            set { destination = value; }
+        }
         const int SPRITE_WIDTH = 16;
         const int SPRITE_HEIGHT = 16;
         const int SPRITE_FRAMES = 5;
-        const int DELAY = 10;
+        const int DELAY = 5;
         private List<Rectangle> framesMiddle, framesVertical, framesRight, framesLeft, 
             framesRightCap, framesLeftCap, framesTopCap, framesBottomCap;
         enum Sprite_Y_Index  { Middle = 0, Vertical = 1, Right = 2, Left = 3, LeftCap = 4, BottomCap = 5, RightCap = 6, TopCap = 7 }

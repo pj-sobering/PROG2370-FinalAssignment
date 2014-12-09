@@ -63,7 +63,7 @@ namespace finalProject
             {
                 Rectangle pRec = p.getBounds();
                 pRec.X += SPRITE_X_OFFSET;
-                pRec.Width -= SPRITE_X_OFFSET;
+                pRec.Width -= SPRITE_X_OFFSET + 5;
                 pRec.Y += SPRITE_Y_OFFSET;
                 pRec.Height -= SPRITE_Y_OFFSET;
                 bool colliding = false;
@@ -71,7 +71,7 @@ namespace finalProject
                 {
                     if (gc != null)
                     {
-                        if (gc.Type == GridCell.CellType.Wall || gc.Type == GridCell.CellType.Destructable)
+                        if (gc.Wall != null)
                         {
                             if (pRec.Intersects(gc.Destination))
                             {
@@ -82,18 +82,18 @@ namespace finalProject
                 }
                 if (colliding == true)
                 {
-                    switch (p.direction)
+                    switch (p.PlayerState)
                     {
-                        case Player.Direction.Up:
+                        case Player.State.Up:
                             p.Position = new Vector2(p.Position.X, p.Position.Y + p.Speed.Y);
                             break;
-                        case Player.Direction.Down:
+                        case Player.State.Down:
                             p.Position = new Vector2(p.Position.X, p.Position.Y - p.Speed.Y);
                             break;
-                        case Player.Direction.Left:
+                        case Player.State.Left:
                             p.Position = new Vector2(p.Position.X + p.Speed.X, p.Position.Y);
                             break;
-                        case Player.Direction.Right:
+                        case Player.State.Right:
                             p.Position = new Vector2(p.Position.X - p.Speed.X, p.Position.Y);
                             break;
                     }
@@ -126,5 +126,19 @@ namespace finalProject
             int y = (int)Math.Floor(space.Y / (ContentManager.Stage.Y / GRID_HEIGHT));
             return new Vector2(x, y);
         }
+
+        //public static void ExplosionCollision(Explosion[] explosions)
+        //{
+        //    foreach (Player p in players)
+        //    {
+        //        foreach (Explosion e in explosions)
+        //        {
+        //            if (p.getBounds().Intersects(e.Destination))
+        //            {
+        //                p.PlayerState = Player.State.Dead; // :(
+        //            }
+        //        }
+        //    }
+        //}
     }
 }

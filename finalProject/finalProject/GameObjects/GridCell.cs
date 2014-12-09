@@ -34,11 +34,20 @@ namespace finalProject
             set { coords = value; }
         }
 
-        public GridCell(Rectangle destination, CellType blockType, Vector2 coords)
+        Wall wall;
+
+        public Wall Wall
+        {
+            get { return wall; }
+            set { wall = value; }
+        }
+
+        public GridCell(Rectangle destination, CellType blockType, Vector2 coords, Wall wall = null)
         {
             this.Destination = destination;
             this.type = blockType;
             this.coords = coords;
+            this.wall = wall;
         }
 
         
