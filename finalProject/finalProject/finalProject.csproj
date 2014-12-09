@@ -73,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameObjects\GridCell.cs" />
+    <Compile Include="GameObjects\Monster.cs" />
     <Compile Include="Scenes\ActionScene.cs" />
     <Compile Include="GameObjects\Bomb.cs" />
     <Compile Include="Managers\CollisionManager.cs" />
