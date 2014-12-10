@@ -114,69 +114,68 @@ namespace finalProject
 
                 List<Explosion> explosions = new List<Explosion>();
                 explosions.Add(centre);
-                if (up.Type != GridCell.CellType.Wall)
+                    
+                if (up.Wall == null || up.Wall.Destructible == true)
                 {
                     Explosion exp = new Explosion(game,spriteBatch, up.Destination, Explosion.Direction.Up);
-                    if (up.Wall != null && up.Wall.Destructible == true)
+                    if (up.Wall != null)
                     {
                         up.Wall.Visible = false;
                         up.Wall.Enabled = false;
                         up.Wall = null;
-                        up.Type = GridCell.CellType.Empty;
-                        player.Score++;
-                        
+                        Player.Score += 1 * game.ActionScene.Level;
                     }
+                    
                     explosions.Add(exp);
                     game.Components.Add(exp);
                 }
-                if (down.Type != GridCell.CellType.Wall)
+
+                
+                    
+                if (down.Wall == null || down.Wall.Destructible == true)
                 {
-                    Explosion exp = new Explosion(game,spriteBatch, down.Destination, Explosion.Direction.Down);
-                    if (down.Wall != null && down.Wall.Destructible == true)
+                    Explosion exp = new Explosion(game, spriteBatch, down.Destination, Explosion.Direction.Down);
+                    if (down.Wall != null)
                     {
                         down.Wall.Visible = false;
                         down.Wall.Visible = false;
                         down.Wall = null;
-                        down.Type = GridCell.CellType.Empty;
-                        player.Score++;
-                        
+                        Player.Score += 1 * game.ActionScene.Level;
                     }
+                    
                     explosions.Add(exp);
                     game.Components.Add(exp);
                 }
-                if (left.Type != GridCell.CellType.Wall)
+                if (left.Wall == null || left.Wall.Destructible == true)
                 {
-
                     Explosion exp = new Explosion(game, spriteBatch, left.Destination, Explosion.Direction.Left);
-                    if (left.Wall != null && left.Wall.Destructible == true)
+                    if (left.Wall != null)
                     {
                         left.Wall.Visible = false;
                         left.Wall.Visible = false;
                         left.Wall = null;
-                        left.Type = GridCell.CellType.Empty;
-                        player.Score++;
-                        
+                        Player.Score += 1 * game.ActionScene.Level;
                     }
-                    explosions.Add(exp);
-                    game.Components.Add(exp);
-                }
-                if (right.Type != GridCell.CellType.Wall)
-                {
-                    Explosion exp = new Explosion(game, spriteBatch, right.Destination, Explosion.Direction.Right);
-                    if (right.Wall != null && right.Wall.Destructible == true)
-                    {
-                        right.Wall.Visible = false;
-                        right.Wall.Visible = false;
-                        right.Wall = null;
-                        right.Type = GridCell.CellType.Empty;
-                        player.Score++;
-                        
-                    }
+                    
                     explosions.Add(exp);
                     game.Components.Add(exp);
                 }
 
-                game.actionScene.cm.ExplosionCollision(explosions, game.actionScene.players);
+                if (right.Wall == null || right.Wall.Destructible == true)
+                {   
+                    Explosion exp = new Explosion(game, spriteBatch, right.Destination, Explosion.Direction.Right);
+                    if (right.Wall != null)
+                    {
+                        right.Wall.Visible = false;
+                        right.Wall.Visible = false;
+                        right.Wall = null;
+                        Player.Score += 1 * game.ActionScene.Level;
+                    }
+                    
+                    explosions.Add(exp);
+                    game.Components.Add(exp);
+                }
+                game.ActionScene.cm.ExplosionCollision(explosions, game.ActionScene.Players, game.ActionScene.Monsters);
                 this.Enabled = false;
                 multiSound = false;
                 hit.Play();

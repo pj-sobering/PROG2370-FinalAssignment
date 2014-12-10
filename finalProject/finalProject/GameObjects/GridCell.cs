@@ -17,15 +17,6 @@ namespace finalProject
             set { destination = value; }
         }
 
-        public enum CellType { Empty, Wall, Destructable }
-
-        CellType type;
-        public CellType Type
-        {
-            get { return type; }
-            set { type = value; }
-        }
-
         Vector2 coords;
 
         public Vector2 Coords
@@ -42,10 +33,9 @@ namespace finalProject
             set { wall = value; }
         }
 
-        public GridCell(Rectangle destination, CellType blockType, Vector2 coords, Wall wall = null)
+        public GridCell(Rectangle destination, Vector2 coords, Wall wall = null)
         {
             this.Destination = destination;
-            this.type = blockType;
             this.coords = coords;
             this.wall = wall;
         }

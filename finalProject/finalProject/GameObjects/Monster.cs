@@ -17,13 +17,14 @@ namespace finalProject
     /// </summary>
     public class Monster : Microsoft.Xna.Framework.DrawableGameComponent
     {
-        const int SPRITE_WIDTH = 42;
+        const int DELAY = 10;
+        const int SPRITE_WIDTH = 25;
         public static int Width
         {
             get { return SPRITE_WIDTH; }
         }
 
-        const int SPRITE_HEIGHT = 30;
+        const int SPRITE_HEIGHT = 25;
         public static int Height
         {
             get { return SPRITE_HEIGHT; }
@@ -43,10 +44,11 @@ namespace finalProject
             get { return speed; }
             set { speed = value; }
         }
-        private Vector2 dimension;
         private List<Rectangle> frames;
-        private int frameIndex = -1;
-        private int delay;
+        private int frameIndex = 0;
+        
+        private GridCell[,] grid;
+
         private int delayCounter;
         private const int NUMBER_OF_FRAMES = 15;
         public enum State { Up, Down, Left, Right, Dead };
@@ -57,18 +59,15 @@ namespace finalProject
             set { monsterState = value; }
         }
 
-        public Monster(Game game, SpriteBatch spriteBatch, Texture2D tex, Vector2 position, Vector2 speed,
-                       int delay, State direction)
+        public Monster(Game1 game, SpriteBatch spriteBatch, Texture2D tex, Vector2 position, Vector2 speed, GridCell[,] grid)
             : base(game)
         {
             // TODO: Construct any child components here
+            this.grid = grid;
             this.spriteBatch = spriteBatch;
             this.tex = tex;
             this.position = position;
             this.speed = speed;
-            this.delay = delay;
-            dimension = new Vector2(41, 40);
-            this.monsterState = direction;
             AnimationFrames();
             
         }
@@ -91,9 +90,9 @@ namespace finalProject
             {
                 for (int j = 0; j < 5; j++)
                 {
-                    int x = j * (int)dimension.X;
-                    int y = i * (int)dimension.Y;
-                    Rectangle r = new Rectangle(x, y, (int)dimension.X, (int)dimension.Y);
+                    int x = j * SPRITE_WIDTH;
+                    int y = i * SPRITE_HEIGHT;
+                    Rectangle r = new Rectangle(x, y, SPRITE_WIDTH, SPRITE_HEIGHT);
                     frames.Add(r);
                 }
             }
@@ -106,29 +105,35 @@ namespace finalProject
         public override void Update(GameTime gameTime)
         {
             // TODO: Add your update code here
-            
 
-            delayCounter++;
-            if (delayCounter > delay)
+            if (monsterState != State.Dead)
             {
-                frameIndex++;
-                if (frameIndex > NUMBER_OF_FRAMES)
+                delayCounter++;
+                if (delayCounter > DELAY)
                 {
-                    frameIndex = 0;
+                    frameIndex++;
+                    if (frameIndex == NUMBER_OF_FRAMES)
+                    {
+                        frameIndex = 0;
+                    }
+                    delayCounter = 0;
                 }
-                delayCounter = 0;
             }
-
+            else
+            {
+                // Death animation
+                this.Enabled = false;
+                this.Visible = false;
+            }
             base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
-            if (frameIndex >= 0)
-            {
-                spriteBatch.Draw(tex, position, frames.ElementAt<Rectangle>(frameIndex), Color.White);
-            }
+
+            spriteBatch.Draw(tex, position, frames.ElementAt<Rectangle>(frameIndex), Color.White);
+            
             spriteBatch.End();
             base.Draw(gameTime);
         }

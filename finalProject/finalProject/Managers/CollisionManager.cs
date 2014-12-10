@@ -28,13 +28,15 @@ namespace finalProject
         const int GRID_WIDTH = 17;
         private Player[] players;
         public GridCell[,] grid;
+        private Monster[] monsters;
         private Game1 game;
 
-        public CollisionManager(Game1 game, Player[] players, GridCell[,] grid)
+        public CollisionManager(Game1 game, Player[] players, GridCell[,] grid, Monster[] monsters)
             : base(game)
         {
             // TODO: Construct any child components here
             this.players = players;
+            this.monsters = monsters;
             this.grid = grid;
             this.game = game;
 
@@ -97,25 +99,54 @@ namespace finalProject
                             break;
                     }
                 }
+                foreach (Monster m in monsters)
+                {
+                    if (m.MonsterState != Monster.State.Dead)
+                    {
+                        if (m.getBounds().Intersects(p.getBounds()))
+                        {
+                            p.PlayerState = Player.State.Dead;
+                        }
+                    }
+                }
+
             }
             
             base.Update(gameTime);
         }
 
-        public void ExplosionCollision(List<Explosion> explosions, Player[]Players)
+        /// <summary>
+        /// Detects if a player is in the area of an explosion
+        /// </summary>
+        /// <param name="explosions"></param>
+        /// <param name="Players"></param>
+        public void ExplosionCollision(List<Explosion> explosions, Player[] players, Monster[] monsters)
         {
-            foreach (Player p in Players)
+            foreach (Explosion exp in explosions)
             {
-                Rectangle pRec = p.getBounds();
-                foreach (Explosion exp in explosions)
+                foreach (Player p in players)
                 {
-                    if (pRec.Intersects(exp.Destination))
+                    if (p.getBounds().Intersects(exp.Destination))
                     {
                         p.PlayerState = Player.State.Dead; // :(
                     }
                 }
+                foreach (Monster m in monsters)
+                {
+                    if (m.MonsterState != Monster.State.Dead)
+                    {
+                        if (m.getBounds().Intersects(exp.Destination))
+                        {
+                            m.MonsterState = Monster.State.Dead; // :)
+                            Player.Score += 5 * game.ActionScene.Level;
+                        }
+                    }
+                }
             }
+
         }
+
+
         /// <summary>
         /// Returns a rectangle that represents a grid space, used to snap objects to grid.
         /// </summary>
@@ -125,19 +156,12 @@ namespace finalProject
         {
             foreach (GridCell gc in grid)
             {
-                if (gc.Type == GridCell.CellType.Empty && gc.Destination.Intersects(playerSpace))
+                if (gc.Wall == null && gc.Destination.Intersects(playerSpace))
                 {
                     return gc;
                 }
             }
-            return new GridCell(playerSpace, GridCell.CellType.Empty, new Vector2(1,1)) ; 
-        }
-
-        public static Vector2 GridCoords(Rectangle space)
-        {
-            int x = (int)Math.Floor(space.X / (ContentManager.Stage.X / GRID_WIDTH));
-            int y = (int)Math.Floor(space.Y / (ContentManager.Stage.Y / GRID_HEIGHT));
-            return new Vector2(x, y);
+            return new GridCell(playerSpace, new Vector2(1,1)) ; 
         }
     }
 }

@@ -24,11 +24,13 @@ namespace finalProject
     {
         const int SPRITE_PADDING = 20; // the space between images in the sprite file - this is removed from the sprite width to improve collision detection
         const int SPRITE_FRAME_LIMIT = 4; // number of frames per movement in the sprite file - Does not have to be constant, but in this case we only work with 4 frames per movement.
-        const int DELAY = 10; // The number of frames to wait before progressing to the next frame of an animation (60 fps)
+        const int DELAY = 5; // The number of frames to wait before progressing to the next frame of an animation (60 fps)
         const int BOMBS_PER_PLAYER = 1; // The number of bombs a player is allowed to drop at a time.
         const int SPRITE_WIDTH = 42; // width of a single image in the sprite file
         const int SPRITE_HEIGHT = 30; // height of a single image in the sprite file
         const int DEAD_TIME = 140; // the number of frames to wait before the death animation ends (60 fps).
+        const int LIVES = 1;
+        const float DEAD_SPEED = 0.3f;
         public enum State { Up, Down, Left, Right, Dead };
 
         public int Width
@@ -67,6 +69,13 @@ namespace finalProject
         private KeyBindings bindings;
         int delayCounter = 0;
         int frameIndex = 0;
+        private static int lives = LIVES;
+
+        public static int Lives
+        {
+            get { return lives; }
+            set { lives = value; }
+        }
 
         private State playerState;
 
@@ -77,8 +86,8 @@ namespace finalProject
             set { playerState = value; }
         }
         private Bomb[] bombArray = new Bomb[BOMBS_PER_PLAYER];
-        private int score;
-        public int Score
+        private static int score = 0;
+        public static int Score
         {
             get { return score; }
             set { score = value; }
@@ -280,8 +289,8 @@ namespace finalProject
                             playerSpace.Y += SPRITE_HEIGHT / 2;
                             playerSpace.Height = 1;
                             playerSpace.Width = 1;
-                            GridCell gridCell = CollisionManager.EmptySpace(playerSpace, game.actionScene.grid);
-                            bombArray[i] = new Bomb(game, spriteBatch, gridCell.Destination, game.actionScene.grid, gridCell.Coords, this, hit);
+                            GridCell gridCell = CollisionManager.EmptySpace(playerSpace, game.ActionScene.Grid);
+                            bombArray[i] = new Bomb(game, spriteBatch, gridCell.Destination, game.ActionScene.Grid, gridCell.Coords, this, hit);
                             game.Components.Add(bombArray[i]);
                             bombArray[i].DrawOrder = 0;
                             hit.Play();
@@ -296,20 +305,13 @@ namespace finalProject
                 // Death animation
                 if (deadCounter <= DEAD_TIME)
                 {
-                    position.Y -= 0.3f;
+                    position.Y -= DEAD_SPEED;
                     deadCounter++;
                 }
                 else
                 {
                     deadCounter = 0;
                     RevivePlayer();
-                    reviveCounter++;
-                    if (reviveCounter == 3)
-                    {
-                        hit2.Play();
-                        MediaPlayer.Stop();
-                        this.Enabled = false;
-                    }
                 }
             }
 
@@ -317,6 +319,23 @@ namespace finalProject
         }
 
         public void RevivePlayer()
+        {
+            if (Lives > 0)
+            {
+                ReturnToStart();
+            }
+            else
+            {
+                this.Enabled = false;
+                this.Visible = false;
+                hit2.Play();
+                MediaPlayer.Stop();
+            }
+
+            Player.Lives--;
+        }
+
+        public void ReturnToStart()
         {
             this.Position = startPosition;
             this.PlayerState = startState;

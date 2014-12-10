@@ -53,17 +53,11 @@ namespace finalProject
         {
             get { return ContentManager.explosionTex; }
         }
-        static Texture2D creatureTex;
+        static Texture2D monsterTex;
 
-        public static Texture2D CreatureTex
+        public static Texture2D MonsterTex
         {
-            get { return ContentManager.creatureTex; }
-        }
-        static Texture2D buildingTex;
-
-        public static Texture2D BuildingTex
-        {
-            get { return ContentManager.buildingTex; }
+            get { return ContentManager.monsterTex; }
         }
 
         static Texture2D wallTex;
@@ -78,9 +72,23 @@ namespace finalProject
         public static Texture2D DeathTex
         {
             get { return ContentManager.deathTex; }
-            set { ContentManager.deathTex = value; }
         }
-  
+
+        private static Texture2D splash;
+
+        public static Texture2D Splash
+        {
+            get { return ContentManager.splash; }
+            set { ContentManager.splash = value; }
+        }
+
+        static Song song;
+
+        public static Song Song
+        {
+            get { return ContentManager.song; }
+        }
+
         static SoundEffect bombDrop;
 
         public static SoundEffect BombDrop
@@ -107,18 +115,27 @@ namespace finalProject
             get { return ContentManager.playerDie; }
         }
 
-        public static SpriteFont font;
+        private static SpriteFont font;
+
+        public static SpriteFont Font
+        {
+            get { return ContentManager.font; }
+            set { ContentManager.font = value; }
+        }
 
         static public void LoadAll(Game1 game)
         {
-            stage = new Vector2(game.Graphics.PreferredBackBufferWidth, game.Graphics.PreferredBackBufferHeight);
+            stage = new Vector2(game.GraphicsDevice.PresentationParameters.BackBufferWidth, game.GraphicsDevice.PresentationParameters.BackBufferHeight);
             player1Tex = game.Content.Load<Texture2D>("images/player1");
             player2Tex = game.Content.Load<Texture2D>("images/player2");
             bombTex = game.Content.Load<Texture2D>("images/bomb");
             explosionTex = game.Content.Load<Texture2D>("images/explosion");
             wallTex = game.Content.Load<Texture2D>("images/box");
             deathTex = game.Content.Load<Texture2D>("images/death");
+            monsterTex = game.Content.Load<Texture2D>("images/monster1");
             font = game.Content.Load<SpriteFont>("fonts/regularFont");
+            song = game.Content.Load<Song>("sounds/battle");
+            splash = game.Content.Load<Texture2D>("images/background");
         }
     }
 }
