@@ -15,34 +15,36 @@ namespace finalProject
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class Scene : GameScene
+    public class Text : Microsoft.Xna.Framework.DrawableGameComponent
     {
         private SpriteBatch spriteBatch;
-        protected Color color;
-        protected SpriteFont font;
+        private SpriteFont font;
+        private Color color;
         private string message;
-        protected string Message
+
+        public string Message
         {
             get { return message; }
             set { message = value; }
         }
         private Vector2 position;
-        protected Vector2 Position
+
+        public Vector2 Position
         {
             get { return position; }
             set { position = value; }
         }
 
-        public Scene(Game game, SpriteBatch spriteBatch, SpriteFont font, Vector2 position,
-                         string message, Color color)
+        public Text(Game game, SpriteBatch spriteBatch, SpriteFont font, Vector2 position,
+                            string message, Color color)
             : base(game)
         {
             // TODO: Construct any child components here
             this.spriteBatch = spriteBatch;
             this.font = font;
-            this.position = position;
-            this.message = message;
             this.color = color;
+            this.message = message;
+            this.position = position;
         }
 
         /// <summary>

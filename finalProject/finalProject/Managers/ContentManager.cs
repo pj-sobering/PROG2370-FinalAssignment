@@ -107,6 +107,8 @@ namespace finalProject
             get { return ContentManager.playerDie; }
         }
 
+        public static SpriteFont font;
+
         static public void LoadAll(Game1 game)
         {
             stage = new Vector2(game.Graphics.PreferredBackBufferWidth, game.Graphics.PreferredBackBufferHeight);
@@ -116,6 +118,7 @@ namespace finalProject
             explosionTex = game.Content.Load<Texture2D>("images/explosion");
             wallTex = game.Content.Load<Texture2D>("images/box");
             deathTex = game.Content.Load<Texture2D>("images/death");
+            font = game.Content.Load<SpriteFont>("fonts/regularFont");
         }
     }
 }

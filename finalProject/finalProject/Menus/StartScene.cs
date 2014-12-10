@@ -15,34 +15,26 @@ namespace finalProject
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class Scene : GameScene
+    public class StartScene : GameScene
     {
-        private SpriteBatch spriteBatch;
-        protected Color color;
-        protected SpriteFont font;
-        private string message;
-        protected string Message
+        private MenuComponent menu; // Make game1 can extract the menu
+        public MenuComponent Menu
         {
-            get { return message; }
-            set { message = value; }
-        }
-        private Vector2 position;
-        protected Vector2 Position
-        {
-            get { return position; }
-            set { position = value; }
+            get { return menu; }
+            set { menu = value; }
         }
 
-        public Scene(Game game, SpriteBatch spriteBatch, SpriteFont font, Vector2 position,
-                         string message, Color color)
+        private SpriteBatch spriteBatch;
+        string[] menuItems = { "Start Game", "Help", "How to play", "About", "Quit" };
+
+        public StartScene(Game game, SpriteBatch spriteBatch)
             : base(game)
         {
             // TODO: Construct any child components here
             this.spriteBatch = spriteBatch;
-            this.font = font;
-            this.position = position;
-            this.message = message;
-            this.color = color;
+            menu = new MenuComponent(game, spriteBatch, game.Content.Load<SpriteFont>("fonts/regularFont"),
+                                     game.Content.Load<SpriteFont>("fonts/hilightFont"), menuItems);
+            this.Components.Add(menu);  
         }
 
         /// <summary>
@@ -65,14 +57,6 @@ namespace finalProject
             // TODO: Add your update code here
 
             base.Update(gameTime);
-        }
-
-        public override void Draw(GameTime gameTime)
-        {
-            spriteBatch.Begin();
-            spriteBatch.DrawString(font, message, position, color);
-            spriteBatch.End();
-            base.Draw(gameTime);
         }
     }
 }

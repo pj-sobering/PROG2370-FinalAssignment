@@ -15,19 +15,33 @@ namespace finalProject
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class Boundary : Microsoft.Xna.Framework.DrawableGameComponent
+    public abstract class GameScene : Microsoft.Xna.Framework.DrawableGameComponent
     {
-        private SpriteBatch spriteBatch;
-        private Texture2D tex;
-        private Vector2 position;
+        private List<GameComponent> components;
+        public List<GameComponent> Components
+        {
+            get { return components; }
+            set { components = value; }
+        }
 
-        public Boundary(Game game, SpriteBatch spriteBatch, Texture2D tex, Vector2 position)
+        public virtual void show()
+        {
+            this.Enabled = true;
+            this.Visible = true;
+        }
+
+        public virtual void hide()
+        {
+            this.Enabled = false;
+            this.Visible = false;
+        }
+
+        public GameScene(Game game)
             : base(game)
         {
             // TODO: Construct any child components here
-            this.spriteBatch = spriteBatch;
-            this.tex = tex;
-            this.position = position;
+            components = new List<GameComponent>();
+            hide();
         }
 
         /// <summary>
@@ -48,15 +62,31 @@ namespace finalProject
         public override void Update(GameTime gameTime)
         {
             // TODO: Add your update code here
-
+            foreach (GameComponent item in components)
+            {
+                if (item.Enabled)
+                {
+                    item.Update(gameTime);
+                }
+            }
             base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
-            spriteBatch.Begin();
-            spriteBatch.Draw(tex, position, Color.White);
-            spriteBatch.End();
+            DrawableGameComponent comp = null;
+            foreach (GameComponent item in components)
+            {
+                if (item is DrawableGameComponent)
+                {
+                    comp = (DrawableGameComponent)item;
+                    if (comp.Visible)
+                    {
+                        comp.Draw(gameTime);
+                    }
+                }
+
+            }
             base.Draw(gameTime);
         }
     }

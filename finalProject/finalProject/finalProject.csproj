@@ -90,6 +90,7 @@
     <Compile Include="Scenes\StartScene.cs" />
     <Compile Include="GameObjects\Wall.cs" />
     <Compile Include="Scenes\Scene.cs" />
+    <Compile Include="Text.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

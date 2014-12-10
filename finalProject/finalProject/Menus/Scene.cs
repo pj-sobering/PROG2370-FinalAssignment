@@ -20,18 +20,8 @@ namespace finalProject
         private SpriteBatch spriteBatch;
         protected Color color;
         protected SpriteFont font;
-        private string message;
-        protected string Message
-        {
-            get { return message; }
-            set { message = value; }
-        }
-        private Vector2 position;
-        protected Vector2 Position
-        {
-            get { return position; }
-            set { position = value; }
-        }
+        protected string message;
+        protected Vector2 position;
 
         public Scene(Game game, SpriteBatch spriteBatch, SpriteFont font, Vector2 position,
                          string message, Color color)

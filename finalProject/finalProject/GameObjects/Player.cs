@@ -77,17 +77,26 @@ namespace finalProject
             set { playerState = value; }
         }
         private Bomb[] bombArray = new Bomb[BOMBS_PER_PLAYER];
-        private static int score;
-
+        private int score;
         public int Score
         {
             get { return score; }
             set { score = value; }
         }
         private SoundEffect hit;
-
-
+        private SoundEffect hit2;
         private int deadCounter = 0;
+        public int DeadCounter
+        {
+            get { return deadCounter; }
+            set { deadCounter = value; }
+        }
+        private int reviveCounter = 0;
+        public int ReviveCounter
+        {
+            get { return reviveCounter; }
+            set { reviveCounter = value; }
+        }
 
         /// <summary>
         /// Constructs a Player object
@@ -115,7 +124,8 @@ namespace finalProject
             this.playerState = state;
             this.startPosition = position;
             this.startState = state;
-            this.hit = hit;
+            this.hit = game.Content.Load<SoundEffect>("sounds/bombPlanted");
+            this.hit2 = game.Content.Load<SoundEffect>("sounds/sadTrombone");
             AnimationFrames();
         }
 
@@ -274,6 +284,7 @@ namespace finalProject
                             bombArray[i] = new Bomb(game, spriteBatch, gridCell.Destination, game.actionScene.grid, gridCell.Coords, this, hit);
                             game.Components.Add(bombArray[i]);
                             bombArray[i].DrawOrder = 0;
+                            hit.Play();
                             break;
                         }
                     }
@@ -292,6 +303,13 @@ namespace finalProject
                 {
                     deadCounter = 0;
                     RevivePlayer();
+                    reviveCounter++;
+                    if (reviveCounter == 3)
+                    {
+                        hit2.Play();
+                        MediaPlayer.Stop();
+                        this.Enabled = false;
+                    }
                 }
             }
 

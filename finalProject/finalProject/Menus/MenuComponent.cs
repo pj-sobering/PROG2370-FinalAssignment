@@ -29,8 +29,8 @@ namespace finalProject
         }
 
         private Vector2 position;
-        private Color regularColor = Color.Aqua;
-        private Color hilightColor = Color.Lime;
+        private Color regularColor = Color.Black;
+        private Color hilightColor = Color.Red;
         private KeyboardState oldState;
 
         public MenuComponent(Game game, SpriteBatch spriteBatch, SpriteFont regularFont, SpriteFont hilightFont, string[] menus)

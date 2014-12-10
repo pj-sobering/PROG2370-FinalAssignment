@@ -23,12 +23,12 @@ namespace finalProject
         private SpriteBatch spriteBatch;
         private Vector2 stage;
         public Player[] players;
+        public Monster[] monsters;
         public GridCell[,] grid; // 13 x 17
-        public CollisionManager cm;
         float width, height;
-        Text scoreString;
-        SpriteFont font;
-        Player p;
+        const int NUMBER_OF_MONSTER = 11;
+        private Vector2 pSpeed = new Vector2(2, 2); // base speed is the same for both players and monsters;
+        private Game1 game;
 
         public ActionScene(Game1 game, SpriteBatch spriteBatch)
             : base(game)
@@ -37,7 +37,8 @@ namespace finalProject
             this.spriteBatch = spriteBatch;
             this.stage = ContentManager.Stage;
             GenerateGrid();
-            Vector2 pSpeed = new Vector2(2, 2); // base speed is the same for both players;
+            GenerateMonster();
+            this.game = game;
 
             players = new Player[2];
             KeyBindings p1Bindings = new KeyBindings(Keys.W, Keys.S, Keys.A, Keys.D, Keys.Space);
@@ -53,19 +54,10 @@ namespace finalProject
             players[1] = p2;
             p2.DrawOrder = 2;
             this.Components.Add(p2);
-            cm = new CollisionManager(game, players, grid);
+
+            CollisionManager cm = new CollisionManager(game, players, grid, monsters);
             this.Components.Add(cm);
-
-            //font = ContentManager.font;
-            //string message = "Total score: " + p.Score;
-            //Vector2 mesPos = new Vector2(0, 0);
-            //scoreString = new Text(game, spriteBatch, font, mesPos, message, Color.Cyan);
-            //this.Components.Add(scoreString);
-
-            //string message1 = "Total death: " + p.DeadCounter;
-            //Vector2 mesPos1 = new Vector2(width * (GRID_WIDTH - 3), 0);
-            //scoreString = new Text(game, spriteBatch, font, mesPos1, message1, Color.Cyan);
-            //this.Components.Add(scoreString);
+            
         }
 
         private void GenerateGrid()
@@ -83,7 +75,7 @@ namespace finalProject
                     // Set up the walls along the border
                     if (i == 0 || i == GRID_HEIGHT - 1 || j == 0 || j == GRID_WIDTH - 1)
                     {
-                        Wall wall = new Wall(Game, spriteBatch, r, false, true);
+                        Wall wall = new Wall(Game, spriteBatch, r, false);
                         GridCell gc = new GridCell(r, GridCell.CellType.Wall, new Vector2(i,j), wall);
                         grid[i, j] = gc;
                         this.Components.Add(wall);
@@ -99,7 +91,8 @@ namespace finalProject
                     else
                     {
                         GridCell gc = new GridCell(r, GridCell.CellType.Empty, new Vector2(i,j));
-                        grid[i,j] = gc;
+                       grid[i,j] = gc;
+
                     }
                 }
             }
@@ -129,12 +122,44 @@ namespace finalProject
                    grid[i, j] = new GridCell(r, GridCell.CellType.Destructable, new Vector2(i,j), destructable);
                    this.Components.Add(destructable);
                    destructableCounter++;
-               
                    Console.WriteLine("Looping through grid" + destructableCounter.ToString());
                 }
             }
         }
 
+        private void GenerateMonster()
+        {
+            monsters = new Monster[NUMBER_OF_MONSTER];
+            int monsterCounter = 0;
+            Random rand = new Random();
+            int delay = 4;
+            while (monsterCounter < NUMBER_OF_MONSTER)
+            {
+                int i = rand.Next(1, GRID_HEIGHT - 1);
+                int j = rand.Next(1, GRID_WIDTH - 1);
+
+                if (grid[i, j].Type == GridCell.CellType.Empty)
+                {
+                    if (i < STARTING_AREA_CLEAR && j < STARTING_AREA_CLEAR)
+                    {
+                        // ensures player one starting block is always empty.
+                        continue;
+                    }
+                    if (i > (GRID_HEIGHT - STARTING_AREA_CLEAR) && j > GRID_WIDTH - STARTING_AREA_CLEAR)
+                    {
+                        // ensures player one starting areas is always empty.
+                        continue;
+                    }
+                    Vector2 monsterPos = new Vector2(grid[i, j].Destination.X + Monster.Width / 2,
+                                                     grid[i, j].Destination.Y + Monster.Height / 2);
+                    Monster monster = new Monster(game, spriteBatch, ContentManager.CreatureTex, monsterPos, pSpeed, delay, Monster.State.Up);
+                    monsters[monsterCounter] = monster;
+                    this.Components.Add(monster);
+                    monsterCounter++;
+                    Console.WriteLine("Looping through grid" + monsterCounter.ToString());
+                }
+            }
+        }
 
         /// <summary>
         /// Allows the game component to perform any initialization it needs to before starting
@@ -154,7 +179,6 @@ namespace finalProject
         public override void Update(GameTime gameTime)
         {
             // TODO: Add your update code here
-
             base.Update(gameTime);
         }
     }

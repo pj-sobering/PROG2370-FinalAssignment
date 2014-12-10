@@ -34,6 +34,7 @@ namespace finalProject
         private Scene howtoPlay;
         private Scene about;
         public ActionScene actionScene;
+        Texture2D backTex;
 
         public Game1()
         {
@@ -81,6 +82,7 @@ namespace finalProject
             startScene = new StartScene(this, spriteBatch);
             Components.Add(startScene);
 
+            backTex = Content.Load<Texture2D>("images/background");
             SpriteFont font = Content.Load<SpriteFont>("fonts/regularFont");
             Vector2 pos = new Vector2(50, 50);
             string message = "The general goal throughout the series is to complete the levels by" +
@@ -182,6 +184,14 @@ namespace finalProject
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.BurlyWood);
+            if (actionScene.Enabled == false && helpScene.Enabled == false
+                && howtoPlay.Enabled == false && about.Enabled == false)
+            {
+                spriteBatch.Begin();
+                spriteBatch.Draw(backTex, new Rectangle(0, 0, Window.ClientBounds.Width,Window.ClientBounds.Height),
+                                null, Color.White, 0, Vector2.Zero, SpriteEffects.None,0);
+                spriteBatch.End();
+            }
             base.Draw(gameTime);
         }
     }
